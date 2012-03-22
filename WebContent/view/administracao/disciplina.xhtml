@@ -1,0 +1,49 @@
+<ui:composition template="../faces/default.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">	
+
+	<ui:define name="page_content">
+
+		<h:form id="form_disciplina">
+			<div id="top_content">
+				<span class="vertical_middle"></span>
+				<h:outputText value="Cadastros > Disciplinas" styleClass="titulo" />
+			</div>
+			<div id="cadastro">				
+				<p:commandButton value="Novo" actionListener="#{disciplinaController.criar}" update="formulario"/>
+				<br/><br/>
+				<p:outputPanel id="formulario">
+					<h:outputLabel for="nome" value="Nome: "/>
+					<p:inputText id="nome" value="#{disciplinaController.disciplina.nome}" />
+				</p:outputPanel>
+				<br/><br/>
+				<p:commandButton value="Salvar" actionListener="#{disciplinaController.salvar}" update="formulario, lista"/>
+				 <p:commandButton value="excluir" actionListener="#{disciplinaController.excluir}" update="formulario, lista"/>				
+			</div>
+			<div id="listagem">				 
+  				<p:outputPanel id="lista">
+			    <p:dataTable id="disciplinas" var="disciplina" value="#{disciplinaController.disciplinaDataModel}" rows="10"  
+			                 selection="#{disciplinaController.disciplinaSelecionada}" rowKey="#{disciplina.id}" selectionMode="single">
+			  
+			  		<p:ajax event="rowSelect" listener="#{disciplinaController.onRowSelect}" update=":form_disciplina:formulario" />  
+			        <p:ajax event="rowUnselect" listener="#{disciplinaController.onRowUnselect}" update=":form_disciplina:formulario"/>  
+			  
+			  		<p:column headerText="ID">  
+			            #{disciplina.id}  
+			        </p:column>	
+			  
+			        <p:column headerText="Nome">  
+			            #{disciplina.nome}  
+			        </p:column>   		  
+			        
+			    </p:dataTable>
+			    </p:outputPanel>
+			</div>
+		</h:form>	
+
+	</ui:define>
+
+</ui:composition>
