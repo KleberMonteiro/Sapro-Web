@@ -1,18 +1,14 @@
 package br.com.saproweb.sistema.dominio.entidades;
 
 import java.io.Serializable;
-import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -27,12 +23,28 @@ public class Periodo implements Serializable {
 	private long id;
 	
 	@Column(name = "periodo")
-	private int periodo;
+	private String periodo;
 	
-	@ManyToMany(targetEntity = Disciplina.class, cascade = {
-		CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER)
-	@JoinTable(name = "periodo_disciplina", joinColumns = @JoinColumn(name = "id_periodo"), inverseJoinColumns = @JoinColumn(name = "id_disciplina"))
-	private List<Disciplina> disciplinas;
+	@OneToOne(cascade = CascadeType.ALL)
+	private Disciplina disciplinaSegunda;
+	
+	@OneToOne(cascade = CascadeType.ALL)
+	private Disciplina disciplinaTerca;
+	
+	@OneToOne(cascade = CascadeType.ALL)
+	private Disciplina disciplinaQuarta;
+	
+	@OneToOne(cascade = CascadeType.ALL)
+	private Disciplina disciplinaQuinta;
+	
+	@OneToOne(cascade = CascadeType.ALL)
+	private Disciplina disciplinaSexta;
+	
+	@OneToOne(cascade = CascadeType.ALL)
+	private Disciplina disciplinaSabado;
+	
+	@OneToOne(cascade = CascadeType.ALL)
+	private Disciplina disciplinaDomingo; 
 	
 	// Gets e Sets
 	public long getId() {
@@ -43,20 +55,68 @@ public class Periodo implements Serializable {
 		this.id = id;
 	}
 
-	public int getPeriodo() {
+	public String getPeriodo() {
 		return periodo;
 	}
 
-	public void setPeriodo(int periodo) {
+	public void setPeriodo(String periodo) {
 		this.periodo = periodo;
 	}
 
-	public List<Disciplina> getDisciplinas() {
-		return disciplinas;
+	public Disciplina getDisciplinaSegunda() {
+		return disciplinaSegunda;
 	}
 
-	public void setDisciplinas(List<Disciplina> disciplinas) {
-		this.disciplinas = disciplinas;
+	public void setDisciplinaSegunda(Disciplina disciplinaSegunda) {
+		this.disciplinaSegunda = disciplinaSegunda;
+	}
+
+	public Disciplina getDisciplinaTerca() {
+		return disciplinaTerca;
+	}
+
+	public void setDisciplinaTerca(Disciplina disciplinaTerca) {
+		this.disciplinaTerca = disciplinaTerca;
+	}
+
+	public Disciplina getDisciplinaQuarta() {
+		return disciplinaQuarta;
+	}
+
+	public void setDisciplinaQuarta(Disciplina disciplinaQuarta) {
+		this.disciplinaQuarta = disciplinaQuarta;
+	}
+
+	public Disciplina getDisciplinaQuinta() {
+		return disciplinaQuinta;
+	}
+
+	public void setDisciplinaQuinta(Disciplina disciplinaQuinta) {
+		this.disciplinaQuinta = disciplinaQuinta;
+	}
+
+	public Disciplina getDisciplinaSexta() {
+		return disciplinaSexta;
+	}
+
+	public void setDisciplinaSexta(Disciplina disciplinaSexta) {
+		this.disciplinaSexta = disciplinaSexta;
+	}
+
+	public Disciplina getDisciplinaSabado() {
+		return disciplinaSabado;
+	}
+
+	public void setDisciplinaSabado(Disciplina disciplinaSabado) {
+		this.disciplinaSabado = disciplinaSabado;
+	}
+
+	public Disciplina getDisciplinaDomingo() {
+		return disciplinaDomingo;
+	}
+
+	public void setDisciplinaDomingo(Disciplina disciplinaDomingo) {
+		this.disciplinaDomingo = disciplinaDomingo;
 	}
 
 }

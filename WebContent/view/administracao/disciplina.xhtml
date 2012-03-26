@@ -6,43 +6,114 @@
 	xmlns:p="http://primefaces.org/ui">	
 
 	<ui:define name="page_content">
-
-		<h:form id="form_disciplina">
-			<div id="top_content">
-				<span class="vertical_middle"></span>
-				<h:outputText value="Cadastros > Disciplinas" styleClass="titulo" />
+			
+		<p:growl id="growl" life="3000"/>
+		
+		<div id="disciplinas">
+		
+			<div id="topo">
+				<div id="titulo">
+					<h:outputText value="Disciplinas" styleClass="titulo" /><br />
+					<h:outputText value="Área disponível para o gerenciamento de cadastros, atualizações e remoções de disciplinas" styleClass="sub_titulo" /><br />
+				</div>
+				<div id="imagem">
+					<p:graphicImage value="/images/livro_icon.png" styleClass="imagem" />
+				</div>
+				<div class="plataforma"></div>
 			</div>
-			<div id="cadastro">				
-				<p:commandButton value="Novo" actionListener="#{disciplinaController.criar}" update="formulario"/>
-				<br/><br/>
-				<p:outputPanel id="formulario">
-					<h:outputLabel for="nome" value="Nome: "/>
-					<p:inputText id="nome" value="#{disciplinaController.disciplina.nome}" />
-				</p:outputPanel>
-				<br/><br/>
-				<p:commandButton value="Salvar" actionListener="#{disciplinaController.salvar}" update="formulario, lista"/>
-				 <p:commandButton value="excluir" actionListener="#{disciplinaController.excluir}" update="formulario, lista"/>				
-			</div>
-			<div id="listagem">				 
-  				<p:outputPanel id="lista">
-			    <p:dataTable id="disciplinas" var="disciplina" value="#{disciplinaController.disciplinaDataModel}" rows="10"  
-			                 selection="#{disciplinaController.disciplinaSelecionada}" rowKey="#{disciplina.id}" selectionMode="single">
-			  
-			  		<p:ajax event="rowSelect" listener="#{disciplinaController.onRowSelect}" update=":form_disciplina:formulario" />  
-			        <p:ajax event="rowUnselect" listener="#{disciplinaController.onRowUnselect}" update=":form_disciplina:formulario"/>  
-			  
-			  		<p:column headerText="ID">  
-			            #{disciplina.id}  
-			        </p:column>	
-			  
-			        <p:column headerText="Nome">  
-			            #{disciplina.nome}  
-			        </p:column>   		  
-			        
-			    </p:dataTable>
+		
+			<h:form id="form_disciplinas" prependId="false">		
+				
+				<p:commandButton value="Novo Registro" actionListener="#{disciplinaController.criar}" oncomplete="cadastroDialog.show()" update=":form_cadastro_dialog:cadastro_dialog"/>
+				<p:spacer width="5" height="0" />				 
+				<p:commandButton id="excluir" value="Excluir itens selecionados" onclick="confirmarExclusao.show()"/>				
+				<br/><br/>									
+				
+				<p:outputPanel id="lista">
+				    <p:dataTable id="disciplinas_table" widgetVar="disciplinas_table" var="disciplina" value="#{disciplinaController.disciplinasDataModel}"  
+		                paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+		                rowsPerPageTemplate="5,10,15,20,25,30" selection="#{disciplinaController.disciplinasSelecionadas}" emptyMessage="Nenhum registro encontrado" 
+		                paginator="true" rows="15" rowKey="#{disciplina.id}" styleClass="disciplinas_table">			  		 
+				  				  
+				  		<p:column selectionMode="multiple" style="width:18px" />
+				  
+				  		<p:column style="width:18px">
+				  			<p:commandLink oncomplete="atualizarDialog.show()" update=":form_atualizar_dialog:atualizar_dialog">				  			  
+				        		<p:graphicImage value="/images/editar.png" title="Editar"/>
+				        		<f:setPropertyActionListener target="#{disciplinaController.disciplina}" value="#{disciplina}"/>
+				        	</p:commandLink>      
+				        </p:column>
+				  
+				  		<p:column headerText="ID" sortBy="#{disciplina.id}" filterBy="#{disciplina.id}"
+							filterMatchMode="exact" filterStyle="width:30px;" style="width:60px">  
+				            #{disciplina.id}  
+				        </p:column>	
+				  
+				        <p:column headerText="Nome" sortBy="#{disciplina.nome}" filterBy="#{disciplina.nome}"
+							filterMatchMode="contains" filterStyle="width:300px;">  
+				            #{disciplina.nome}  
+				        </p:column>   		  
+				        
+				    </p:dataTable>
 			    </p:outputPanel>
-			</div>
-		</h:form>	
+		    </h:form>
+		    
+		    <div id="fundo"></div>
+		    
+		</div>
+		
+		<h:form id="form_cadastro_dialog" prependId="false">
+			<p:dialog id="cadastro_dialog" widgetVar="cadastroDialog" header="Novo Registro" 
+				visible="false" modal="true" resizable="false" closable="false" width="335" height="100">					
+				
+				<div id="cadastro">										
+					<br />				
+					<h:outputLabel for="cadastro_nome" value="Nome: "/>
+					<p:inputText id="cadastro_nome" value="#{disciplinaController.disciplina.nome}" size="40"/>
+					<br />
+					<p:commandButton value="Salvar" actionListener="#{disciplinaController.salvar}" 
+						update=":form_disciplinas:lista, :growl" oncomplete="cadastroDialog.hide()" style="margin: 30px 0 0 80px" />
+					<p:commandButton value="Cancelar" type="button" onclick="cadastroDialog.hide()" style="margin: 30px 0 0 20px" />
+			    </div>
+			    				      							
+			</p:dialog>										
+		</h:form>										
+				
+		<h:form id="form_atualizar_dialog" prependId="false">
+			<p:dialog id="atualizar_dialog" widgetVar="atualizarDialog" header="Alterar Registro" 
+				visible="false" modal="true" resizable="false" closable="false" width="337" height="130">					
+				
+				<div id="atualizar">					
+						<br />
+						<h:outputLabel for="atualizar_id" value="ID: "/>
+						<p:spacer width="20" height="0"/>
+						<h:outputText id="atualizar_id" value="#{disciplinaController.disciplina.id}" size="40"/>
+						<br /><br />					
+						<h:outputLabel for="atualizar_nome" value="Nome: "/>
+						<p:inputText id="atualizar_nome" value="#{disciplinaController.disciplina.nome}" size="40"/>
+						<br />
+						
+						<p:commandButton value="Salvar" actionListener="#{disciplinaController.atualizar}" 
+		        			update=":form_disciplinas:lista, :growl" oncomplete="atualizarDialog.hide()" style="margin: 30px 0 0 80px" />
+	        			<p:commandButton value="Cancelar" type="button" onclick="atualizarDialog.hide()" style="margin: 30px 0 0 20px" />					
+				</div>
+																	
+			</p:dialog>				 
+		</h:form>			
+	    
+	    <h:form id="form_exclusao_dialog" prependId="false">
+		    <p:confirmDialog id="confirmar_exclusao" message="Tem certeza eu desejas excluir estas informações?"  
+                header="Confirmação de exclusão" severity="info" widgetVar="confirmarExclusao" closable="false">  
+                
+                <div style="text-align: center">  
+			        <p:commandButton value="Sim" actionListener="#{disciplinaController.excluir}" 
+			        	update=":form_disciplinas:lista, :growl" oncomplete="confirmarExclusao.hide()" />
+			        <p:spacer width="15" height="0" />   
+			        <p:commandButton value="Não" onclick="confirmarExclusao.hide()" type="button" />
+		        </div>  
+		                  
+		    </p:confirmDialog>
+	    </h:form>		    
 
 	</ui:define>
 

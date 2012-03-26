@@ -7,7 +7,98 @@
 
 	<ui:define name="page_content">
 
+		<p:growl id="growl" life="3000"/>
 		
+		<div id="cursos">
+		
+			<div id="topo">
+				<div id="titulo">
+					<h:outputText value="Cursos" styleClass="titulo" /><br />
+					<h:outputText value="Área disponível para o gerenciamento de cadastros, atualizações e remoções de cursos" styleClass="sub_titulo" /><br />
+				</div>
+				<div id="imagem">
+					<p:graphicImage value="/images/capelo.png" styleClass="imagem" />
+				</div>
+				<div class="plataforma"></div>
+			</div>
+			
+			<h:form id="cursos_form" prependId="false">
+			
+				<h:outputLabel for="nome" value="Nome do curso: "/>
+				<p:inputText id="nome" value="#{cursoController.curso.nome}" size="60"/>
+				
+				<br /><br /><br />
+			
+				<ui:repeat var="periodo" value="#{cursoController.periodos}">
+			
+					<div class="periodo">
+						<div class="periodo_titulo" style="float: left; height: 160px; width: 138px; background-image: url('/images/bg_periodo.png'); background-repeat: y-repeat; background-position: right; border-right: 1px solid #DDD; line-height: 150px">
+							<h:outputText value="#{cursoController.periodosMap[periodo]}" styleClass="titulo" style="color: #999; font-size: 1.2em; font-weight: bold; padding-left: 20px"/>					
+						</div>												
+			        	
+			        	<div class="disciplinas" style="float: left; margin-left: 20px">
+			        		<h:panelGrid columns="2">
+			        			        				        				        			
+		        				<h:outputText value="Segunda" style="color: #446591"/>
+		        				<p:selectOneMenu value="#{cursoController.gradeMap[periodo]['segunda']}">
+				        			<f:selectItem itemLabel="" itemValue=""/>
+				        			<f:selectItems value="#{cursoController.disciplinas}" var="disciplina" itemLabel="#{disciplina.nome}" itemValue="#{disciplina.id}"/>
+				        		</p:selectOneMenu>
+				        		
+				        		<h:outputText value="Terça" style="color: #446591"/>
+		        				<p:selectOneMenu value="#{cursoController.gradeMap[periodo]['terca']}">
+				        			<f:selectItem itemLabel="" itemValue=""/>
+				        			<f:selectItems value="#{cursoController.disciplinas}" var="disciplina" itemLabel="#{disciplina.nome}" itemValue="#{disciplina.id}"/>
+				        		</p:selectOneMenu>
+				        		
+				        		<h:outputText value="Quarta" style="color: #446591"/>
+		        				<p:selectOneMenu value="#{cursoController.gradeMap[periodo]['quarta']}">
+				        			<f:selectItem itemLabel="" itemValue=""/>
+				        			<f:selectItems value="#{cursoController.disciplinas}" var="disciplina" itemLabel="#{disciplina.nome}" itemValue="#{disciplina.id}"/>
+				        		</p:selectOneMenu>
+				        		
+				        		<h:outputText value="Quinta" style="color: #446591"/>
+		        				<p:selectOneMenu value="#{cursoController.gradeMap[periodo]['quinta']}">
+				        			<f:selectItem itemLabel="" itemValue=""/>
+				        			<f:selectItems value="#{cursoController.disciplinas}" var="disciplina" itemLabel="#{disciplina.nome}" itemValue="#{disciplina.id}"/>
+				        		</p:selectOneMenu>
+				        		
+				        		<h:outputText value="Sexta" style="color: #446591"/>
+		        				<p:selectOneMenu value="#{cursoController.gradeMap[periodo]['sexta']}">
+				        			<f:selectItem itemLabel="" itemValue=""/>
+				        			<f:selectItems value="#{cursoController.disciplinas}" var="disciplina" itemLabel="#{disciplina.nome}" itemValue="#{disciplina.id}"/>
+				        		</p:selectOneMenu>
+				        		
+				        		<h:outputText value="Sábado" style="color: #446591"/>
+		        				<p:selectOneMenu value="#{cursoController.gradeMap[periodo]['sabado']}">
+				        			<f:selectItem itemLabel="" itemValue=""/>
+				        			<f:selectItems value="#{cursoController.disciplinas}" var="disciplina" itemLabel="#{disciplina.nome}" itemValue="#{disciplina.id}"/>
+				        		</p:selectOneMenu>
+				        		
+				        		<h:outputText value="Domingo" style="color: #446591"/>
+		        				<p:selectOneMenu value="#{cursoController.gradeMap[periodo]['domingo']}">
+				        			<f:selectItem itemLabel="" itemValue=""/>
+				        			<f:selectItems value="#{cursoController.disciplinas}" var="disciplina" itemLabel="#{disciplina.nome}" itemValue="#{disciplina.id}"/>
+				        		</p:selectOneMenu>
+					        			        		
+			        		</h:panelGrid>					  
+			        							  
+			        	</div>
+			        	
+			        	<div class="plataforma"></div>
+			        </div>
+			        
+			        <br />
+		        
+		        </ui:repeat>
+		        
+		        <p:commandButton value="salvar" actionListener="#{cursoController.salvar}" style="margin: 20px 160px;"/>
+		        
+		    </h:form>
+						
+			<div id="fundo"></div>
+		
+		</div>			
 
 	</ui:define>
 

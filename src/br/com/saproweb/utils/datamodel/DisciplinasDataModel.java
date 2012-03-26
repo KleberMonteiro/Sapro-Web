@@ -8,13 +8,13 @@ import org.primefaces.model.SelectableDataModel;
 
 import br.com.saproweb.sistema.dominio.entidades.Disciplina;
 
-public class DisciplinaDataModel extends ListDataModel<Disciplina> implements
+public class DisciplinasDataModel extends ListDataModel<Disciplina> implements
 		SelectableDataModel<Disciplina> {
 
-	public DisciplinaDataModel() {
+	public DisciplinasDataModel() {
 	}
 
-	public DisciplinaDataModel(List<Disciplina> data) {
+	public DisciplinasDataModel(List<Disciplina> data) {
 		super(data);
 	}
 
@@ -25,7 +25,7 @@ public class DisciplinaDataModel extends ListDataModel<Disciplina> implements
 		List<Disciplina> disciplinas = (List<Disciplina>) getWrappedData();
 
 		for (Disciplina disciplina : disciplinas) {
-			if (disciplina.getNome().equals(rowKey))
+			if (disciplina.getId() == (Long.parseLong(rowKey)))
 				return disciplina;
 		}
 
@@ -34,7 +34,7 @@ public class DisciplinaDataModel extends ListDataModel<Disciplina> implements
 
 	@Override
 	public Object getRowKey(Disciplina disciplina) {
-		return disciplina.getNome();
+		return disciplina.getId();
 	}
 
 }
