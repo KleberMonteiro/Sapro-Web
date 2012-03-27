@@ -6,6 +6,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,9 +16,11 @@ import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import br.com.saproweb.utils.enumeration.DiaEnum;
+
 @Entity
-@Table(name = "periodo")
-public class Periodo implements Serializable {
+@Table(name = "diaturnos")
+public class DiaTurnos implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -25,14 +29,16 @@ public class Periodo implements Serializable {
 	@Column(name = "id", unique = true, nullable = false)
 	private long id;
 	
-	@Column(name = "periodo")
-	private String periodo;
+	@Column(name = "dia")
+	@Enumerated(EnumType.ORDINAL)
+	private DiaEnum dia;
 	
 	@OneToMany(cascade = CascadeType.ALL)	
-	@JoinTable(name = "periodo_dia", joinColumns = { @JoinColumn(name = "id_periodo") },
-		inverseJoinColumns = { @JoinColumn(name = "id_dia") })
-	private List<DiaDisciplina> dias;
+	@JoinTable(name = "diaturnos_turnos", joinColumns = { @JoinColumn(name = "id_diaturnos") },
+		inverseJoinColumns = { @JoinColumn(name = "id_turno") })
+	private List<Turno> turnos;
 
+	//Gets e Sets
 	public long getId() {
 		return id;
 	}
@@ -41,20 +47,20 @@ public class Periodo implements Serializable {
 		this.id = id;
 	}
 
-	public String getPeriodo() {
-		return periodo;
+	public DiaEnum getDia() {
+		return dia;
 	}
 
-	public void setPeriodo(String periodo) {
-		this.periodo = periodo;
+	public void setDia(DiaEnum dia) {
+		this.dia = dia;
 	}
 
-	public List<DiaDisciplina> getDias() {
-		return dias;
+	public List<Turno> getTurnos() {
+		return turnos;
 	}
 
-	public void setDias(List<DiaDisciplina> dias) {
-		this.dias = dias;
-	}
+	public void setTurnos(List<Turno> turnos) {
+		this.turnos = turnos;
+	}		
 
 }

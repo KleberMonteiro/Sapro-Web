@@ -20,7 +20,7 @@ public class Disciplina implements Serializable {
 	@Column(name = "id", unique = true, nullable = false)
 	private long id;
 
-	@Column(name = "nome", nullable = false, columnDefinition="VARCHAR(45) default ''")
+	@Column(name = "nome", nullable = false, columnDefinition="VARCHAR(150) default ''")
 	private String nome = "";
 
 	// Gets e Sets

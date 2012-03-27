@@ -2,19 +2,22 @@ package br.com.saproweb.sistema.dominio.entidades;
 
 import java.io.Serializable;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import br.com.saproweb.utils.enumeration.DiaEnum;
+
 @Entity
-@Table(name = "dia")
-public class Dia implements Serializable {
-	
+@Table(name = "diadisciplina")
+public class DiaDisciplina implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 	
 	@Id
@@ -22,16 +25,13 @@ public class Dia implements Serializable {
 	@Column(name = "id", unique = true, nullable = false)
 	private long id;
 	
-	@OneToOne(cascade = CascadeType.ALL)
-	private Turno manha;
+	@Column(name = "dia")
+	@Enumerated(EnumType.ORDINAL)
+	private DiaEnum dia;
 	
-	@OneToOne(cascade = CascadeType.ALL)
-	private Turno tarde;
-	
-	@OneToOne(cascade = CascadeType.ALL)
-	private Turno noite;
+	@OneToOne
+	private Disciplina disciplina;
 
-	//Gets e Sets
 	public long getId() {
 		return id;
 	}
@@ -40,28 +40,20 @@ public class Dia implements Serializable {
 		this.id = id;
 	}
 
-	public Turno getManha() {
-		return manha;
+	public DiaEnum getDia() {
+		return dia;
 	}
 
-	public void setManha(Turno manha) {
-		this.manha = manha;
+	public void setDia(DiaEnum dia) {
+		this.dia = dia;
 	}
 
-	public Turno getTarde() {
-		return tarde;
+	public Disciplina getDisciplina() {
+		return disciplina;
 	}
 
-	public void setTarde(Turno tarde) {
-		this.tarde = tarde;
-	}
-
-	public Turno getNoite() {
-		return noite;
-	}
-
-	public void setNoite(Turno noite) {
-		this.noite = noite;
+	public void setDisciplina(Disciplina disciplina) {
+		this.disciplina = disciplina;
 	}	
 
 }

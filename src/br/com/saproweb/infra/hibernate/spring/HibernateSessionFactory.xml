@@ -14,10 +14,13 @@ http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 				<value>br.com.saproweb.sistema.dominio.entidades.Curso</value>
 				<value>br.com.saproweb.sistema.dominio.entidades.QuadroDeHorarios</value>
 				<value>br.com.saproweb.sistema.dominio.entidades.Semana</value>
-				<value>br.com.saproweb.sistema.dominio.entidades.Dia</value>
 				<value>br.com.saproweb.sistema.dominio.entidades.Turno</value>
 				<value>br.com.saproweb.sistema.dominio.entidades.Grade</value>
 				<value>br.com.saproweb.sistema.dominio.entidades.Periodo</value>				
+				<value>br.com.saproweb.sistema.dominio.entidades.DiaTurnos</value>
+				<value>br.com.saproweb.sistema.dominio.entidades.DiaDisciplina</value>
+				<value>br.com.saproweb.sistema.dominio.entidades.Turma</value>
+				<value>br.com.saproweb.sistema.dominio.entidades.Cadeira</value>
 			</list>
 		</property>
 		<property name="dataSource">

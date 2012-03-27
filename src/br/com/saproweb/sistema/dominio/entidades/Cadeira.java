@@ -9,14 +9,15 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import br.com.saproweb.utils.enumeration.TurnoEnum;
+import br.com.saproweb.utils.enumeration.DiaEnum;
 
 @Entity
-@Table(name = "turno")
-public class Turno implements Serializable {
-	
+@Table(name = "cadeira")
+public class Cadeira implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 	
 	@Id
@@ -24,17 +25,16 @@ public class Turno implements Serializable {
 	@Column(name = "id", unique = true, nullable = false)
 	private long id;
 	
-	@Column(name = "turno")
+	@Column(name = "dia")
 	@Enumerated(EnumType.ORDINAL)
-	private TurnoEnum turno;
+	private DiaEnum dia;
 	
-	@Column(name = "horario_1")
-	private boolean horario1 = false;
+	@OneToOne
+	private Professor professor;
 	
-	@Column(name = "horario_2")
-	private boolean horario2 = false;
+	@OneToOne
+	private Disciplina disciplina;
 
-	// Gets e Sets
 	public long getId() {
 		return id;
 	}
@@ -43,28 +43,28 @@ public class Turno implements Serializable {
 		this.id = id;
 	}
 
-	public TurnoEnum getTurno() {
-		return turno;
+	public DiaEnum getDia() {
+		return dia;
 	}
 
-	public void setTurno(TurnoEnum turno) {
-		this.turno = turno;
+	public void setDia(DiaEnum dia) {
+		this.dia = dia;
 	}
 
-	public boolean isHorario1() {
-		return horario1;
+	public Professor getProfessor() {
+		return professor;
 	}
 
-	public void setHorario1(boolean horario1) {
-		this.horario1 = horario1;
+	public void setProfessor(Professor professor) {
+		this.professor = professor;
 	}
 
-	public boolean isHorario2() {
-		return horario2;
+	public Disciplina getDisciplina() {
+		return disciplina;
 	}
 
-	public void setHorario2(boolean horario2) {
-		this.horario2 = horario2;
-	}	
+	public void setDisciplina(Disciplina disciplina) {
+		this.disciplina = disciplina;
+	}
 
 }

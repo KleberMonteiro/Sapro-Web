@@ -14,7 +14,6 @@ import br.com.saproweb.sistema.dominio.entidades.Disciplina;
 import br.com.saproweb.sistema.dominio.entidades.Professor;
 import br.com.saproweb.sistema.dominio.service.DisciplinaService;
 import br.com.saproweb.sistema.dominio.service.ProfessorService;
-import br.com.saproweb.utils.GeradorProfessor;
 
 @Named
 @Scope("request")
@@ -47,7 +46,7 @@ public class ProfessorController implements Serializable {
 	}
 	
 	public void criarProfessor(){
-		professor = GeradorProfessor.gerar();
+		//professor = GeradorProfessor.gerar();
 	}
 
 	// Gets e Sets

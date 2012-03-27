@@ -15,11 +15,13 @@ import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 
 import br.com.saproweb.sistema.dominio.entidades.Curso;
+import br.com.saproweb.sistema.dominio.entidades.DiaDisciplina;
 import br.com.saproweb.sistema.dominio.entidades.Disciplina;
 import br.com.saproweb.sistema.dominio.entidades.Grade;
 import br.com.saproweb.sistema.dominio.entidades.Periodo;
 import br.com.saproweb.sistema.dominio.service.CursoService;
 import br.com.saproweb.sistema.dominio.service.DisciplinaService;
+import br.com.saproweb.utils.enumeration.DiaEnum;
 
 @Named
 @Scope("session")
@@ -38,21 +40,29 @@ public class CursoController implements Serializable {
 	private DisciplinaService disciplinaService;
 	
 	private Curso curso;
-	Grade grade = new Grade();
+	private Grade grade;
 	
 	private List<Disciplina> disciplinas;
 	
 	private List<String> periodos;
 	private Map<String, String> periodosMap;	
-	private Map<String, Map<String, String>> gradeMap;	
+	private Map<String, Map<String, String>> gradeMap;
+	
+	private DiaEnum diasEnum;
 
 	@SuppressWarnings("unused")
 	@PostConstruct
-	private void init() {
-		curso = new Curso();
+	private void init() {		
 		disciplinas = disciplinaService.buscarTodos();		
+		novoCurso();
 		gerarPeriodos();
 		gerarGrade();		
+	}
+	
+	public void novoCurso() {
+		logger.debug("Criando novo curso...");
+		curso = new Curso();
+		grade = new Grade();
 	}
 	
 	private void gerarPeriodos() {
@@ -82,7 +92,7 @@ public class CursoController implements Serializable {
 	}
 	
 	private void gerarGrade() {
-		gradeMap = new HashMap<String, Map<String,String>>();
+		gradeMap = new HashMap<String, Map<String, String>>();
 		gradeMap.put("1", gerarSemana());				
 		gradeMap.put("2", gerarSemana());				
 		gradeMap.put("3", gerarSemana());				
@@ -95,55 +105,85 @@ public class CursoController implements Serializable {
 		gradeMap.put("10", gerarSemana());				
 	}
 	
-	private Map<String,String> gerarSemana() {
+	private Map<String, String> gerarSemana() {
 		Map<String,String> semana = new HashMap<String, String>();		
-		semana.put("segunda", "");
-		semana.put("terca", "");
-		semana.put("quarta", "");
-		semana.put("quinta", "");
-		semana.put("sexta", "");
-		semana.put("sabado", "");
-		semana.put("domingo", "");
+		semana.put("SEGUNDA", "");
+		semana.put("TERCA", "");
+		semana.put("QUARTA", "");
+		semana.put("QUINTA", "");
+		semana.put("SEXTA", "");
+		semana.put("SABADO", "");
+		semana.put("DOMINGO", "");
 		return semana;
 	}
 	
 	private Grade criarGrade() {		
-		List<Periodo> listaPeriodos = new ArrayList<Periodo>();
+		List<Periodo> listaPeriodos = new ArrayList<Periodo>();		
 		
 		for (Iterator<String> iterator = periodos.iterator(); iterator.hasNext();) {
 			String periodoStr = iterator.next();
 			Map<String, String> disciplinaPorDiaMap = gradeMap.get(periodoStr);
-			String disciplinaSegunda = disciplinaPorDiaMap.get("segunda");
-			String disciplinaTerca = disciplinaPorDiaMap.get("terca");
-			String disciplinaQuarta = disciplinaPorDiaMap.get("quarta");
-			String disciplinaQuinta = disciplinaPorDiaMap.get("quinta");
-			String disciplinaSexta = disciplinaPorDiaMap.get("sexta");
-			String disciplinaSabado = disciplinaPorDiaMap.get("sabado");
-			String disciplinaDomingo = disciplinaPorDiaMap.get("domingo");
-			Periodo periodo = new Periodo();
+			
+			String idDisciplinaSegunda = disciplinaPorDiaMap.get("SEGUNDA");
+			String idDisciplinaTerca = disciplinaPorDiaMap.get("TERCA");
+			String idDisciplinaQuarta = disciplinaPorDiaMap.get("QUARTA");
+			String idDisciplinaQuinta = disciplinaPorDiaMap.get("QUINTA");
+			String idDisciplinaSexta = disciplinaPorDiaMap.get("SEXTA");
+			String idDisciplinaSabado = disciplinaPorDiaMap.get("SABADO");
+			String idDisciplinaDomingo = disciplinaPorDiaMap.get("DOMINGO");
+			
+			List<DiaDisciplina> listaDias = new ArrayList<DiaDisciplina>();
 			
 			for (Iterator<Disciplina> iterator2 = disciplinas.iterator(); iterator2.hasNext();) {
 				Disciplina disciplina = iterator2.next();
-				String id = String.valueOf(disciplina.getId());
+				String id = String.valueOf(disciplina.getId());				
 				
-				if(id.equals(disciplinaSegunda)){
-					periodo.setDisciplinaSegunda(disciplina);
-				}else if(id.equals(disciplinaTerca)){
-					periodo.setDisciplinaTerca(disciplina);
-				}else if(id.equals(disciplinaQuarta)){
-					periodo.setDisciplinaQuarta(disciplina);
-				}else if(id.equals(disciplinaQuinta)){
-					periodo.setDisciplinaQuinta(disciplina);
-				}else if(id.equals(disciplinaSexta)){
-					periodo.setDisciplinaSexta(disciplina);
-				}else if(id.equals(disciplinaSabado)){
-					periodo.setDisciplinaDomingo(disciplina);
-				}else if(id.equals(disciplinaDomingo)){
-					periodo.setDisciplinaDomingo(disciplina);
+				DiaDisciplina dia = new DiaDisciplina();				
+				
+				if(id.equals(idDisciplinaSegunda)){					
+					dia.setDisciplina(disciplina);
+					dia.setDia(DiaEnum.SEGUNDA);
+					listaDias.add(dia);
+				}
+				else if(id.equals(idDisciplinaTerca)){
+					dia.setDisciplina(disciplina);
+					dia.setDia(DiaEnum.TERCA);
+					listaDias.add(dia);
+				}
+				else if(id.equals(idDisciplinaQuarta)){
+					dia.setDisciplina(disciplina);
+					dia.setDia(DiaEnum.QUARTA);
+					listaDias.add(dia);
+				}
+				else if(id.equals(idDisciplinaQuinta)){
+					dia.setDisciplina(disciplina);
+					dia.setDia(DiaEnum.QUINTA);
+					listaDias.add(dia);
+				}
+				else if(id.equals(idDisciplinaSexta)){
+					dia.setDisciplina(disciplina);
+					dia.setDia(DiaEnum.SEXTA);
+					listaDias.add(dia);
+				}
+				else if(id.equals(idDisciplinaSabado)){
+					dia.setDisciplina(disciplina);
+					dia.setDia(DiaEnum.SABADO);
+					listaDias.add(dia);
+				}
+				else if(id.equals(idDisciplinaDomingo)){
+					dia.setDisciplina(disciplina);
+					dia.setDia(DiaEnum.DOMINGO);
+					listaDias.add(dia);
 				}				
-			}
+			}		
 			
-			listaPeriodos.add(periodo);			
+			if (listaDias.size() > 0) {
+				Periodo periodo = new Periodo();
+				periodo.setPeriodo(periodoStr);
+				periodo.setDias(listaDias);
+				listaPeriodos.add(periodo);	
+			}			
+					
 		}
 		
 		grade.setPeriodos(listaPeriodos);
@@ -151,9 +191,20 @@ public class CursoController implements Serializable {
 		return grade;
 	}
 	
-	public void salvar() {
-		criarGrade();
-		System.out.println(grade.getPeriodos().get(0).getDisciplinaSegunda().getNome());
+	public void salvar() {		
+		try {
+			
+			criarGrade();
+			curso.setGrade(grade);			
+			cursoService.salvar(curso);
+			
+//			Curso curso = cursoService.buscarPorId(2L);
+//			cursoService.excluir(curso);
+
+		
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
 	}
 
 	public List<Disciplina> getDisciplinas() {
@@ -194,6 +245,14 @@ public class CursoController implements Serializable {
 
 	public void setCurso(Curso curso) {
 		this.curso = curso;
+	}
+
+	public DiaEnum getDiasEnum() {
+		return diasEnum;
+	}
+
+	public void setDiasEnum(DiaEnum diasEnum) {
+		this.diasEnum = diasEnum;
 	}	
 
 }

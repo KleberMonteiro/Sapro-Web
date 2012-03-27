@@ -40,43 +40,43 @@
 			        		<h:panelGrid columns="2">
 			        			        				        				        			
 		        				<h:outputText value="Segunda" style="color: #446591"/>
-		        				<p:selectOneMenu value="#{cursoController.gradeMap[periodo]['segunda']}">
+		        				<p:selectOneMenu value="#{cursoController.gradeMap[periodo]['SEGUNDA']}">
 				        			<f:selectItem itemLabel="" itemValue=""/>
 				        			<f:selectItems value="#{cursoController.disciplinas}" var="disciplina" itemLabel="#{disciplina.nome}" itemValue="#{disciplina.id}"/>
 				        		</p:selectOneMenu>
 				        		
 				        		<h:outputText value="Terça" style="color: #446591"/>
-		        				<p:selectOneMenu value="#{cursoController.gradeMap[periodo]['terca']}">
+		        				<p:selectOneMenu value="#{cursoController.gradeMap[periodo]['TERCA']}">
 				        			<f:selectItem itemLabel="" itemValue=""/>
 				        			<f:selectItems value="#{cursoController.disciplinas}" var="disciplina" itemLabel="#{disciplina.nome}" itemValue="#{disciplina.id}"/>
 				        		</p:selectOneMenu>
 				        		
 				        		<h:outputText value="Quarta" style="color: #446591"/>
-		        				<p:selectOneMenu value="#{cursoController.gradeMap[periodo]['quarta']}">
+		        				<p:selectOneMenu value="#{cursoController.gradeMap[periodo]['QUARTA']}">
 				        			<f:selectItem itemLabel="" itemValue=""/>
 				        			<f:selectItems value="#{cursoController.disciplinas}" var="disciplina" itemLabel="#{disciplina.nome}" itemValue="#{disciplina.id}"/>
 				        		</p:selectOneMenu>
 				        		
 				        		<h:outputText value="Quinta" style="color: #446591"/>
-		        				<p:selectOneMenu value="#{cursoController.gradeMap[periodo]['quinta']}">
+		        				<p:selectOneMenu value="#{cursoController.gradeMap[periodo]['QUINTA']}">
 				        			<f:selectItem itemLabel="" itemValue=""/>
 				        			<f:selectItems value="#{cursoController.disciplinas}" var="disciplina" itemLabel="#{disciplina.nome}" itemValue="#{disciplina.id}"/>
 				        		</p:selectOneMenu>
 				        		
 				        		<h:outputText value="Sexta" style="color: #446591"/>
-		        				<p:selectOneMenu value="#{cursoController.gradeMap[periodo]['sexta']}">
+		        				<p:selectOneMenu value="#{cursoController.gradeMap[periodo]['SEXTA']}">
 				        			<f:selectItem itemLabel="" itemValue=""/>
 				        			<f:selectItems value="#{cursoController.disciplinas}" var="disciplina" itemLabel="#{disciplina.nome}" itemValue="#{disciplina.id}"/>
 				        		</p:selectOneMenu>
 				        		
 				        		<h:outputText value="Sábado" style="color: #446591"/>
-		        				<p:selectOneMenu value="#{cursoController.gradeMap[periodo]['sabado']}">
+		        				<p:selectOneMenu value="#{cursoController.gradeMap[periodo]['SABADO']}">
 				        			<f:selectItem itemLabel="" itemValue=""/>
 				        			<f:selectItems value="#{cursoController.disciplinas}" var="disciplina" itemLabel="#{disciplina.nome}" itemValue="#{disciplina.id}"/>
 				        		</p:selectOneMenu>
 				        		
 				        		<h:outputText value="Domingo" style="color: #446591"/>
-		        				<p:selectOneMenu value="#{cursoController.gradeMap[periodo]['domingo']}">
+		        				<p:selectOneMenu value="#{cursoController.gradeMap[periodo]['DOMINGO']}">
 				        			<f:selectItem itemLabel="" itemValue=""/>
 				        			<f:selectItems value="#{cursoController.disciplinas}" var="disciplina" itemLabel="#{disciplina.nome}" itemValue="#{disciplina.id}"/>
 				        		</p:selectOneMenu>
@@ -92,7 +92,8 @@
 		        
 		        </ui:repeat>
 		        
-		        <p:commandButton value="salvar" actionListener="#{cursoController.salvar}" style="margin: 20px 160px;"/>
+		        <p:commandButton value="salvar" actionListener="#{cursoController.salvar}" update="cursos_form" style="margin: 20px 160px;"/>
+		        <p:commandButton value="Criar novo registro" actionListener="#{cursoController.novoCurso}" update="cursos_form" style="margin: 20px 160px;"/>
 		        
 		    </h:form>
 						
