@@ -1,11 +1,14 @@
 package br.com.saproweb.sistema.dominio.entidades;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,22 +17,30 @@ import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import br.com.saproweb.utils.enumeration.StatusEnum;
+
 @Entity
 @Table(name = "grade")
 public class Grade implements Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", unique = true, nullable = false)
 	private long id;
-	
-	@OneToMany(cascade = CascadeType.ALL)	
-	@JoinTable(name = "grade_periodo", joinColumns = { @JoinColumn(name = "id_grade") },
-		inverseJoinColumns = { @JoinColumn(name = "id_periodo") })
-	private List<Periodo> periodos;
-	
+
+	@Column(name = "atual")
+	private boolean atual;
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinTable(name = "grade_periodo", joinColumns = { @JoinColumn(name = "id_grade") }, inverseJoinColumns = { @JoinColumn(name = "id_periodo") })
+	private Set<Periodo> periodos;
+
+	@Column(name = "status")
+	@Enumerated(EnumType.ORDINAL)
+	private StatusEnum status;
+
 	// Gets e Sets
 	public long getId() {
 		return id;
@@ -39,12 +50,28 @@ public class Grade implements Serializable {
 		this.id = id;
 	}
 
-	public List<Periodo> getPeriodos() {
+	public boolean isAtual() {
+		return atual;
+	}
+
+	public void setAtual(boolean atual) {
+		this.atual = atual;
+	}
+
+	public Set<Periodo> getPeriodos() {
 		return periodos;
 	}
 
-	public void setPeriodos(List<Periodo> periodos) {
+	public void setPeriodos(Set<Periodo> periodos) {
 		this.periodos = periodos;
-	}	
+	}
+
+	public StatusEnum getStatus() {
+		return status;
+	}
+
+	public void setStatus(StatusEnum status) {
+		this.status = status;
+	}
 
 }

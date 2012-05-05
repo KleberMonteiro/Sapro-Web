@@ -1,34 +1,39 @@
 package br.com.saproweb.sistema.dominio.entidades;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "curso")
 public class Curso implements Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", unique = true, nullable = false)
 	private long id;
 
-	@Column(name = "nome", nullable = false, columnDefinition="VARCHAR(45) default ''")
+	@Column(name = "nome", nullable = false, columnDefinition = "VARCHAR(45) default ''")
 	private String nome = "";
-	
-	@OneToOne(cascade = CascadeType.ALL)
-	private Grade grade;
 
-	//Gets e Sets
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinTable(name = "curso_grade", joinColumns = { @JoinColumn(name = "id_curso") }, inverseJoinColumns = { @JoinColumn(name = "id_grade") })
+	private Set<Grade> grades;
+
+	// Gets e Sets
 	public long getId() {
 		return id;
 	}
@@ -45,12 +50,12 @@ public class Curso implements Serializable {
 		this.nome = nome;
 	}
 
-	public Grade getGrade() {
-		return grade;
+	public Set<Grade> getGrades() {
+		return grades;
 	}
 
-	public void setGrade(Grade grade) {
-		this.grade = grade;
-	}	
+	public void setGrades(Set<Grade> grades) {
+		this.grades = grades;
+	}
 
 }

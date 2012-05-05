@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -17,6 +18,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import br.com.saproweb.utils.enumeration.DiaEnum;
+import br.com.saproweb.utils.enumeration.StatusEnum;
 
 @Entity
 @Table(name = "diaturnos")
@@ -33,10 +35,14 @@ public class DiaTurnos implements Serializable {
 	@Enumerated(EnumType.ORDINAL)
 	private DiaEnum dia;
 	
-	@OneToMany(cascade = CascadeType.ALL)	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)	
 	@JoinTable(name = "diaturnos_turnos", joinColumns = { @JoinColumn(name = "id_diaturnos") },
 		inverseJoinColumns = { @JoinColumn(name = "id_turno") })
 	private List<Turno> turnos;
+	
+	@Column(name = "status")
+	@Enumerated(EnumType.ORDINAL)
+	private StatusEnum status;
 
 	//Gets e Sets
 	public long getId() {
@@ -61,6 +67,14 @@ public class DiaTurnos implements Serializable {
 
 	public void setTurnos(List<Turno> turnos) {
 		this.turnos = turnos;
+	}
+
+	public StatusEnum getStatus() {
+		return status;
+	}
+
+	public void setStatus(StatusEnum status) {
+		this.status = status;
 	}		
 
 }

@@ -3,205 +3,264 @@ package br.com.saproweb.sistema.controller;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 
 import br.com.saproweb.sistema.dominio.entidades.Curso;
-import br.com.saproweb.sistema.dominio.entidades.DiaDisciplina;
 import br.com.saproweb.sistema.dominio.entidades.Disciplina;
 import br.com.saproweb.sistema.dominio.entidades.Grade;
 import br.com.saproweb.sistema.dominio.entidades.Periodo;
 import br.com.saproweb.sistema.dominio.service.CursoService;
 import br.com.saproweb.sistema.dominio.service.DisciplinaService;
 import br.com.saproweb.utils.enumeration.DiaEnum;
+import br.com.saproweb.utils.enumeration.StatusEnum;
 
 @Named
-@Scope("session")
+@Scope("request")
 public class CursoController implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private Logger logger = Logger.getLogger(DisciplinaController.class);
-	
+
 	@Inject
 	@Named("cursoService")
 	private CursoService cursoService;
-	
+
 	@Inject
 	@Named("disciplinaService")
 	private DisciplinaService disciplinaService;
-	
+
 	private Curso curso;
 	private Grade grade;
-	
+	private Set<Grade> grades;
+
 	private List<Disciplina> disciplinas;
-	
-	private List<String> periodos;
-	private Map<String, String> periodosMap;	
+	private List<String> dias;
+	private List<String> periodosStr;
+	private Map<String, String> periodosMap;
 	private Map<String, Map<String, String>> gradeMap;
-	
+
 	private DiaEnum diasEnum;
+
+	private static final int QTD_PERIODOS = 10;
+	private static final int QTD_DISCIPLINAS_PERIODO = 7;
 
 	@SuppressWarnings("unused")
 	@PostConstruct
-	private void init() {		
-		disciplinas = disciplinaService.buscarTodos();		
-		novoCurso();
-		gerarPeriodos();
-		gerarGrade();		
+	private void init() {
+		try {
+
+			disciplinas = disciplinaService.buscarTodos();
+			dias = new ArrayList<String>();
+			for (int dia = 1; dia <= QTD_DISCIPLINAS_PERIODO; dia++) {
+				dias.add(String.valueOf(dia));
+			}
+
+			gerarPeriodos();
+
+			// Pega o parâmetro id da url
+			HttpServletRequest request = (HttpServletRequest) FacesContext
+					.getCurrentInstance().getExternalContext().getRequest();
+			String idCurso = request.getParameter("id");
+
+			if (idCurso != null) {
+				long id = Long.parseLong(idCurso);
+				curso = cursoService.buscarPorId(id);
+
+				if (curso != null) {
+					grades = curso.getGrades();
+
+					if (grades.size() > 0) {
+						for (Iterator<Grade> iterator = grades.iterator(); iterator
+								.hasNext();) {
+							Grade grade = iterator.next();
+
+							if (grade.isAtual()) {
+								this.grade = grade;
+								break;
+							}
+						}
+
+						montarGrade();
+					}
+				} else {
+					novoRegistro();
+				}
+			} else {
+				novoRegistro();
+			}
+
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
 	}
-	
-	public void novoCurso() {
+
+	private void gerarPeriodos() {
+		try {
+
+			periodosStr = new ArrayList<String>();
+			periodosMap = new HashMap<String, String>();
+
+			for (int i = 1; i <= QTD_PERIODOS; i++) {
+				String periodoStr = String.valueOf(i);
+				periodosStr.add(periodoStr);
+				periodosMap.put(periodoStr, periodoStr + "º Período");
+			}
+
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void montarGrade() {
+		try {
+
+			gradeMap = new HashMap<String, Map<String, String>>();
+			Set<Periodo> periodos = grade.getPeriodos();
+
+			for (String periodoStr1 : periodosStr) {
+				boolean periodoAdicionado = false;
+
+				for (Periodo periodo : periodos) {
+					String periodoStr2 = periodo.getPeriodoStr();
+
+					if (periodoStr1.equalsIgnoreCase(periodoStr2)) {
+						Map<String, String> disciplinasMap = new HashMap<String, String>();
+						List<Disciplina> listaDisciplinas = new ArrayList<Disciplina>(
+								periodo.getDisciplinas());
+
+						for (int index = 0; index < QTD_DISCIPLINAS_PERIODO; index++) {
+							String indexStr = String.valueOf(index + 1);
+							
+							try {
+								Disciplina disciplina = listaDisciplinas
+										.get(index);
+								String idDisciplina = String.valueOf(disciplina
+										.getId());
+								disciplinasMap.put(indexStr, idDisciplina);
+							} catch (IndexOutOfBoundsException e) {
+								disciplinasMap.put(indexStr, "");
+							}
+						}
+
+						gradeMap.put(periodoStr1, disciplinasMap);
+						periodoAdicionado = true;
+					}
+				}
+
+				if (!periodoAdicionado) {
+					gradeMap.put(periodoStr1, gerarDisciplinasMap());
+				}
+			}
+
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void novoRegistro() {
 		logger.debug("Criando novo curso...");
 		curso = new Curso();
 		grade = new Grade();
+		grades = new HashSet<Grade>();
+		gerarGrade();
 	}
-	
-	private void gerarPeriodos() {
-		periodos = new ArrayList<String>();
-		periodos.add("1");
-		periodos.add("2");
-		periodos.add("3");
-		periodos.add("4");
-		periodos.add("5");
-		periodos.add("6");
-		periodos.add("7");
-		periodos.add("8");
-		periodos.add("9");
-		periodos.add("10");
-		
-		periodosMap = new HashMap<String, String>();
-		periodosMap.put("1", "1º Período");
-		periodosMap.put("2", "2º Período");
-		periodosMap.put("3", "3º Período");
-		periodosMap.put("4", "4º Período");
-		periodosMap.put("5", "5º Período");
-		periodosMap.put("6", "6º Período");
-		periodosMap.put("7", "7º Período");
-		periodosMap.put("8", "8º Período");
-		periodosMap.put("9", "9º Período");
-		periodosMap.put("10", "10º Período");
-	}
-	
+
 	private void gerarGrade() {
 		gradeMap = new HashMap<String, Map<String, String>>();
-		gradeMap.put("1", gerarSemana());				
-		gradeMap.put("2", gerarSemana());				
-		gradeMap.put("3", gerarSemana());				
-		gradeMap.put("4", gerarSemana());				
-		gradeMap.put("5", gerarSemana());				
-		gradeMap.put("6", gerarSemana());				
-		gradeMap.put("7", gerarSemana());				
-		gradeMap.put("8", gerarSemana());				
-		gradeMap.put("9", gerarSemana());				
-		gradeMap.put("10", gerarSemana());				
-	}
-	
-	private Map<String, String> gerarSemana() {
-		Map<String,String> semana = new HashMap<String, String>();		
-		semana.put("SEGUNDA", "");
-		semana.put("TERCA", "");
-		semana.put("QUARTA", "");
-		semana.put("QUINTA", "");
-		semana.put("SEXTA", "");
-		semana.put("SABADO", "");
-		semana.put("DOMINGO", "");
-		return semana;
-	}
-	
-	private Grade criarGrade() {		
-		List<Periodo> listaPeriodos = new ArrayList<Periodo>();		
-		
-		for (Iterator<String> iterator = periodos.iterator(); iterator.hasNext();) {
-			String periodoStr = iterator.next();
-			Map<String, String> disciplinaPorDiaMap = gradeMap.get(periodoStr);
-			
-			String idDisciplinaSegunda = disciplinaPorDiaMap.get("SEGUNDA");
-			String idDisciplinaTerca = disciplinaPorDiaMap.get("TERCA");
-			String idDisciplinaQuarta = disciplinaPorDiaMap.get("QUARTA");
-			String idDisciplinaQuinta = disciplinaPorDiaMap.get("QUINTA");
-			String idDisciplinaSexta = disciplinaPorDiaMap.get("SEXTA");
-			String idDisciplinaSabado = disciplinaPorDiaMap.get("SABADO");
-			String idDisciplinaDomingo = disciplinaPorDiaMap.get("DOMINGO");
-			
-			List<DiaDisciplina> listaDias = new ArrayList<DiaDisciplina>();
-			
-			for (Iterator<Disciplina> iterator2 = disciplinas.iterator(); iterator2.hasNext();) {
-				Disciplina disciplina = iterator2.next();
-				String id = String.valueOf(disciplina.getId());				
-				
-				DiaDisciplina dia = new DiaDisciplina();				
-				
-				if(id.equals(idDisciplinaSegunda)){					
-					dia.setDisciplina(disciplina);
-					dia.setDia(DiaEnum.SEGUNDA);
-					listaDias.add(dia);
-				}
-				else if(id.equals(idDisciplinaTerca)){
-					dia.setDisciplina(disciplina);
-					dia.setDia(DiaEnum.TERCA);
-					listaDias.add(dia);
-				}
-				else if(id.equals(idDisciplinaQuarta)){
-					dia.setDisciplina(disciplina);
-					dia.setDia(DiaEnum.QUARTA);
-					listaDias.add(dia);
-				}
-				else if(id.equals(idDisciplinaQuinta)){
-					dia.setDisciplina(disciplina);
-					dia.setDia(DiaEnum.QUINTA);
-					listaDias.add(dia);
-				}
-				else if(id.equals(idDisciplinaSexta)){
-					dia.setDisciplina(disciplina);
-					dia.setDia(DiaEnum.SEXTA);
-					listaDias.add(dia);
-				}
-				else if(id.equals(idDisciplinaSabado)){
-					dia.setDisciplina(disciplina);
-					dia.setDia(DiaEnum.SABADO);
-					listaDias.add(dia);
-				}
-				else if(id.equals(idDisciplinaDomingo)){
-					dia.setDisciplina(disciplina);
-					dia.setDia(DiaEnum.DOMINGO);
-					listaDias.add(dia);
-				}				
-			}		
-			
-			if (listaDias.size() > 0) {
-				Periodo periodo = new Periodo();
-				periodo.setPeriodo(periodoStr);
-				periodo.setDias(listaDias);
-				listaPeriodos.add(periodo);	
-			}			
-					
-		}
-		
-		grade.setPeriodos(listaPeriodos);
-		
-		return grade;
-	}
-	
-	public void salvar() {		
-		try {
-			
-			criarGrade();
-			curso.setGrade(grade);			
-			cursoService.salvar(curso);
-			
-//			Curso curso = cursoService.buscarPorId(2L);
-//			cursoService.excluir(curso);
 
-		
+		for (int periodo = 1; periodo <= QTD_PERIODOS; periodo++) {
+			gradeMap.put(String.valueOf(periodo), gerarDisciplinasMap());
+		}
+	}
+
+	private Map<String, String> gerarDisciplinasMap() {
+		Map<String, String> disciplinasMap = new HashMap<String, String>();
+
+		for (int index = 1; index <= QTD_DISCIPLINAS_PERIODO; index++) {
+			disciplinasMap.put(String.valueOf(index), "");
+		}
+
+		return disciplinasMap;
+	}
+
+	private Grade criarGrade() {
+		try {
+
+			Grade grade = new Grade();
+			Set<Periodo> periodos = new HashSet<Periodo>();
+			Set<Disciplina> disciplinas;
+
+			for (Entry<String, Map<String, String>> entry : gradeMap.entrySet()) {
+				String periodoStr = entry.getKey();
+				Map<String, String> disciplinasMap = entry.getValue();
+				Periodo periodo = new Periodo();
+				disciplinas = new HashSet<Disciplina>();
+
+				for (Entry<String, String> entry2 : disciplinasMap.entrySet()) {
+					String disciplinaIdStr = entry2.getValue();
+
+					if (!disciplinaIdStr.equals("")) {
+						long disciplinaId = Long.parseLong(entry2.getValue());
+
+						for (Disciplina disciplina : this.disciplinas) {
+							if (disciplinaId == disciplina.getId()) {
+								disciplinas.add(disciplina);
+							}
+						}
+					}
+				}
+				
+				if (!disciplinas.isEmpty()) {
+					periodo.setPeriodoStr(periodoStr);
+					periodo.setDisciplinas(disciplinas);
+					periodos.add(periodo);
+				}				
+			}
+
+			grade.setPeriodos(periodos);
+			grade.setAtual(true);
+			grade.setStatus(StatusEnum.ATIVO);
+
+			return grade;
+
+		} catch (Throwable e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public void salvar() {
+		try {
+
+			if (!grades.isEmpty()) {
+				for (Grade grade : grades) {
+					if (grade.isAtual()) {
+						grade.setAtual(false);
+						grade.setStatus(StatusEnum.DELETADO);
+					}
+				}
+			}
+
+			Grade grade = criarGrade();
+			grades.add(grade);
+			curso.setGrades(grades);
+			cursoService.salvar(curso);
+
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
@@ -223,12 +282,12 @@ public class CursoController implements Serializable {
 		this.gradeMap = gradeMap;
 	}
 
-	public List<String> getPeriodos() {
-		return periodos;
+	public List<String> getPeriodosStr() {
+		return periodosStr;
 	}
 
-	public void setPeriodos(List<String> periodos) {
-		this.periodos = periodos;
+	public void setPeriodosStr(List<String> periodosStr) {
+		this.periodosStr = periodosStr;
 	}
 
 	public Map<String, String> getPeriodosMap() {
@@ -253,6 +312,14 @@ public class CursoController implements Serializable {
 
 	public void setDiasEnum(DiaEnum diasEnum) {
 		this.diasEnum = diasEnum;
-	}	
+	}
+
+	public List<String> getDias() {
+		return dias;
+	}
+
+	public void setDias(List<String> dias) {
+		this.dias = dias;
+	}
 
 }

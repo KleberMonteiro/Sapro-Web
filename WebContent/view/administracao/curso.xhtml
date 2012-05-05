@@ -23,78 +23,34 @@
 			</div>
 			
 			<h:form id="cursos_form" prependId="false">
-			
 				<h:outputLabel for="nome" value="Nome do curso: "/>
 				<p:inputText id="nome" value="#{cursoController.curso.nome}" size="60"/>
 				
 				<br /><br /><br />
 			
-				<ui:repeat var="periodo" value="#{cursoController.periodos}">
-			
+				<ui:repeat var="periodo" value="#{cursoController.periodosStr}">			
 					<div class="periodo">
-						<div class="periodo_titulo" style="float: left; height: 160px; width: 138px; background-image: url('/images/bg_periodo.png'); background-repeat: y-repeat; background-position: right; border-right: 1px solid #DDD; line-height: 150px">
+						<div class="periodo_titulo" style="float: left; height: 178px; width: 138px; background-image: url('/images/bg_periodo.png'); background-repeat: y-repeat; background-position: right; border-right: 1px solid #DDD; line-height: 150px">
 							<h:outputText value="#{cursoController.periodosMap[periodo]}" styleClass="titulo" style="color: #999; font-size: 1.2em; font-weight: bold; padding-left: 20px"/>					
-						</div>												
-			        	
+						</div>								
 			        	<div class="disciplinas" style="float: left; margin-left: 20px">
-			        		<h:panelGrid columns="2">
-			        			        				        				        			
-		        				<h:outputText value="Segunda" style="color: #446591"/>
-		        				<p:selectOneMenu value="#{cursoController.gradeMap[periodo]['SEGUNDA']}">
-				        			<f:selectItem itemLabel="" itemValue=""/>
-				        			<f:selectItems value="#{cursoController.disciplinas}" var="disciplina" itemLabel="#{disciplina.nome}" itemValue="#{disciplina.id}"/>
-				        		</p:selectOneMenu>
-				        		
-				        		<h:outputText value="Terça" style="color: #446591"/>
-		        				<p:selectOneMenu value="#{cursoController.gradeMap[periodo]['TERCA']}">
-				        			<f:selectItem itemLabel="" itemValue=""/>
-				        			<f:selectItems value="#{cursoController.disciplinas}" var="disciplina" itemLabel="#{disciplina.nome}" itemValue="#{disciplina.id}"/>
-				        		</p:selectOneMenu>
-				        		
-				        		<h:outputText value="Quarta" style="color: #446591"/>
-		        				<p:selectOneMenu value="#{cursoController.gradeMap[periodo]['QUARTA']}">
-				        			<f:selectItem itemLabel="" itemValue=""/>
-				        			<f:selectItems value="#{cursoController.disciplinas}" var="disciplina" itemLabel="#{disciplina.nome}" itemValue="#{disciplina.id}"/>
-				        		</p:selectOneMenu>
-				        		
-				        		<h:outputText value="Quinta" style="color: #446591"/>
-		        				<p:selectOneMenu value="#{cursoController.gradeMap[periodo]['QUINTA']}">
-				        			<f:selectItem itemLabel="" itemValue=""/>
-				        			<f:selectItems value="#{cursoController.disciplinas}" var="disciplina" itemLabel="#{disciplina.nome}" itemValue="#{disciplina.id}"/>
-				        		</p:selectOneMenu>
-				        		
-				        		<h:outputText value="Sexta" style="color: #446591"/>
-		        				<p:selectOneMenu value="#{cursoController.gradeMap[periodo]['SEXTA']}">
-				        			<f:selectItem itemLabel="" itemValue=""/>
-				        			<f:selectItems value="#{cursoController.disciplinas}" var="disciplina" itemLabel="#{disciplina.nome}" itemValue="#{disciplina.id}"/>
-				        		</p:selectOneMenu>
-				        		
-				        		<h:outputText value="Sábado" style="color: #446591"/>
-		        				<p:selectOneMenu value="#{cursoController.gradeMap[periodo]['SABADO']}">
-				        			<f:selectItem itemLabel="" itemValue=""/>
-				        			<f:selectItems value="#{cursoController.disciplinas}" var="disciplina" itemLabel="#{disciplina.nome}" itemValue="#{disciplina.id}"/>
-				        		</p:selectOneMenu>
-				        		
-				        		<h:outputText value="Domingo" style="color: #446591"/>
-		        				<p:selectOneMenu value="#{cursoController.gradeMap[periodo]['DOMINGO']}">
-				        			<f:selectItem itemLabel="" itemValue=""/>
-				        			<f:selectItems value="#{cursoController.disciplinas}" var="disciplina" itemLabel="#{disciplina.nome}" itemValue="#{disciplina.id}"/>
-				        		</p:selectOneMenu>
-					        			        		
-			        		</h:panelGrid>					  
-			        							  
-			        	</div>
 			        	
+	        				<ui:repeat var="dia" value="#{cursoController.dias}">
+	        					<p:selectOneMenu value="#{cursoController.gradeMap[periodo][dia]}">
+				        			<f:selectItem itemLabel="" itemValue=""/>
+				        			<f:selectItems value="#{cursoController.disciplinas}" var="disciplina2" itemLabel="#{disciplina2.nome}" itemValue="#{disciplina2.id}"/>
+				        		</p:selectOneMenu>        		
+			        			<br />
+	        				</ui:repeat>  
+	        				      							  
+			        	</div>
 			        	<div class="plataforma"></div>
 			        </div>
-			        
 			        <br />
-		        
 		        </ui:repeat>
 		        
 		        <p:commandButton value="salvar" actionListener="#{cursoController.salvar}" update="cursos_form" style="margin: 20px 160px;"/>
-		        <p:commandButton value="Criar novo registro" actionListener="#{cursoController.novoCurso}" update="cursos_form" style="margin: 20px 160px;"/>
-		        
+		        <p:commandButton value="Criar novo registro" actionListener="#{cursoController.novoRegistro}" update="cursos_form" style="margin: 20px 160px;"/>
 		    </h:form>
 						
 			<div id="fundo"></div>
