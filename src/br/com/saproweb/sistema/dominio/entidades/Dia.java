@@ -22,7 +22,7 @@ import br.com.saproweb.utils.enumeration.StatusEnum;
 
 @Entity
 @Table(name = "diaturnos")
-public class DiaTurnos implements Serializable {
+public class Dia implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	

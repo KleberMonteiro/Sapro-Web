@@ -28,7 +28,7 @@ public class Semana implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL)	
 	@JoinTable(name = "semana_diaturnos", joinColumns = { @JoinColumn(name = "id_semana") },
 		inverseJoinColumns = { @JoinColumn(name = "id_diaturnos") })
-	private List<DiaTurnos> dias;
+	private List<Dia> dias;
 
 	//Gets e Sets
 	public long getId() {
@@ -39,11 +39,11 @@ public class Semana implements Serializable {
 		this.id = id;
 	}
 
-	public List<DiaTurnos> getDias() {
+	public List<Dia> getDias() {
 		return dias;
 	}
 
-	public void setDias(List<DiaTurnos> dias) {
+	public void setDias(List<Dia> dias) {
 		this.dias = dias;
 	}	
 
