@@ -1,7 +1,7 @@
 package br.com.saproweb.sistema.dominio.entidades;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -39,7 +39,7 @@ public class Professor implements Serializable{
 	@ManyToMany(targetEntity = Disciplina.class, cascade = {
 		CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER)
 	@JoinTable(name = "professor_disciplina", joinColumns = @JoinColumn(name = "id_professor"), inverseJoinColumns = @JoinColumn(name = "id_disciplina"))
-	private List<Disciplina> disciplinas;
+	private Set<Disciplina> disciplinas;
 
 	// Gets e Sets
 	public long getId() {
@@ -58,11 +58,11 @@ public class Professor implements Serializable{
 		this.nome = nome;
 	}
 
-	public List<Disciplina> getDisciplinas() {
+	public Set<Disciplina> getDisciplinas() {
 		return disciplinas;
 	}
 
-	public void setDisciplinas(List<Disciplina> disciplinas) {
+	public void setDisciplinas(Set<Disciplina> disciplinas) {
 		this.disciplinas = disciplinas;
 	}
 

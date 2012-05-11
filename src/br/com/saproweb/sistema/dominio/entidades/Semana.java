@@ -1,11 +1,12 @@
 package br.com.saproweb.sistema.dominio.entidades;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,10 +26,10 @@ public class Semana implements Serializable {
 	@Column(name = "id", unique = true, nullable = false)
 	private long id;
 	
-	@OneToMany(cascade = CascadeType.ALL)	
-	@JoinTable(name = "semana_diaturnos", joinColumns = { @JoinColumn(name = "id_semana") },
-		inverseJoinColumns = { @JoinColumn(name = "id_diaturnos") })
-	private List<Dia> dias;
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)	
+	@JoinTable(name = "semana_dia", joinColumns = { @JoinColumn(name = "id_semana") },
+		inverseJoinColumns = { @JoinColumn(name = "id_dia") })
+	private Set<Dia> dias;
 
 	//Gets e Sets
 	public long getId() {
@@ -39,12 +40,12 @@ public class Semana implements Serializable {
 		this.id = id;
 	}
 
-	public List<Dia> getDias() {
+	public Set<Dia> getDias() {
 		return dias;
 	}
 
-	public void setDias(List<Dia> dias) {
+	public void setDias(Set<Dia> dias) {
 		this.dias = dias;
-	}	
+	}
 
 }

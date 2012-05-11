@@ -1,7 +1,7 @@
 package br.com.saproweb.sistema.dominio.entidades;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -21,7 +21,7 @@ import br.com.saproweb.utils.enumeration.DiaEnum;
 import br.com.saproweb.utils.enumeration.StatusEnum;
 
 @Entity
-@Table(name = "diaturnos")
+@Table(name = "dia")
 public class Dia implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -36,9 +36,9 @@ public class Dia implements Serializable {
 	private DiaEnum dia;
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)	
-	@JoinTable(name = "diaturnos_turnos", joinColumns = { @JoinColumn(name = "id_diaturnos") },
+	@JoinTable(name = "dia_turnos", joinColumns = { @JoinColumn(name = "id_dia") },
 		inverseJoinColumns = { @JoinColumn(name = "id_turno") })
-	private List<Turno> turnos;
+	private Set<Turno> turnos;
 	
 	@Column(name = "status")
 	@Enumerated(EnumType.ORDINAL)
@@ -61,11 +61,11 @@ public class Dia implements Serializable {
 		this.dia = dia;
 	}
 
-	public List<Turno> getTurnos() {
+	public Set<Turno> getTurnos() {
 		return turnos;
 	}
 
-	public void setTurnos(List<Turno> turnos) {
+	public void setTurnos(Set<Turno> turnos) {
 		this.turnos = turnos;
 	}
 
