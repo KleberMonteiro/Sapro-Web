@@ -82,7 +82,7 @@
 	
 	<!-- Configurações Web Context -->
 	<welcome-file-list>
-		<welcome-file>view/administracao/disciplina.jsf</welcome-file>
+		<welcome-file>view/cadastros/disciplina.jsf</welcome-file>
 	</welcome-file-list>
 
 	<session-config>

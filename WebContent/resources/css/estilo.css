@@ -17,6 +17,24 @@
 	vertical-align: middle;
 }
 
+.botao {
+	height: 40px;
+}
+
+.botao span {
+	font-size: 1.3em;
+}
+
+.mensagem {
+	height: 30px;
+}
+
+.ajax_loader {
+	float: left;
+	display: none;
+	margin-left: 10px;
+}
+
 html,body { 
 	height: 100%;	
 }
@@ -28,6 +46,13 @@ body {
 #all {
 	min-height: 100%;
 	position: relative;
+}
+
+#top {	
+	height: 25px;
+	background-color: #333;
+	background-image: url("/images/top_fundo.png");
+	text-align: middle;
 }
 
 #page {
@@ -45,22 +70,20 @@ body {
 	border-bottom: 1px solid #DDD;
 	border-top-left-radius: 3px;
 	border-top-right-radius: 3px;
+	background: #333;
 }
 
 #content #left {
 	float: left;
-	width: 199px;
-	height: 700px;
-	background: #424548;
+	width: 199px;	
 	border-right: 1px solid #555;
-	border-top-left-radius: 3px;
 }
 
 #content #right {
 	float: right;
 	width: 800px;
-	background: #FCFCFC;
-	border-top-right-radius: 3px;
+	min-height: 700px;
+	background: #FCFCFC;	
 }
 
 #clear {
@@ -73,52 +96,53 @@ body {
 	bottom: 0;
 }
 
-#cursos,
-#disciplinas {
+#cadastro {
 	width: 740px;
 	margin: 0 auto;
 }
 
-#cursos #topo,
-#disciplinas #topo {
-	margin-top: 20px;
+#conteudo {	
+	width: 740px;
+	margin: 20px auto;
 }
 
-#cursos #topo #titulo,
-#disciplinas #topo #titulo {
+#topo #titulo {
 	float: left; 
-	width: 550px;
+	width: 550px;	
 }
 
-#cursos #topo #titulo .titulo,
-#disciplinas #topo #titulo .titulo {
+#topo #titulo .titulo {
 	color: #446591; 
 	font-size: 1.9em;
 	font-weight: bold;
 }
 
-#cursos #topo #titulo .sub_titulo,
-#disciplinas #topo #titulo .sub_titulo {
+#topo #titulo .sub_titulo {
 	color: #777;
 }
 
-#cursos #topo #imagem,
-#disciplinas #topo #imagem {
+#topo #imagem {
 	float: right; 
 	width: 150px;
 }
 
-#cursos #topo #imagem .imagem,
-#disciplinas #topo #imagem .imagem {
+#topo #imagem .imagem {
 	float: right; 
 	width: 100px;
 }
 
-#disciplinas .disciplinas_table {
+#conteudo #cadastro .div_label {
+	float: left;
+}
+
+#conteudo #cadastro .div_component {
+	float: left;
+}
+
+#cadastro .data_table {
 	width: 740px;
 }
 
-#cursos #fundo,
-#disciplinas #fundo {
+#cadastro #fundo {
 	height: 30px;
 }

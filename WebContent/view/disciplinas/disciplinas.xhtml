@@ -9,7 +9,7 @@
 			
 		<p:growl id="growl" life="3000"/>
 		
-		<div id="disciplinas">
+		<div id="cadastro">
 		
 			<div id="topo">
 				<div id="titulo">
@@ -33,7 +33,7 @@
 				    <p:dataTable id="disciplinas_table" widgetVar="disciplinas_table" var="disciplina" value="#{disciplinaController.disciplinasDataModel}"  
 		                paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
 		                rowsPerPageTemplate="5,10,15,20,25,30" selection="#{disciplinaController.disciplinasSelecionadas}" emptyMessage="Nenhum registro encontrado" 
-		                paginator="true" rows="15" rowKey="#{disciplina.id}" styleClass="disciplinas_table">			  		 
+		                paginator="true" rows="15" rowKey="#{disciplina.id}" styleClass="data_table">			  		 
 				  				  
 				  		<p:column selectionMode="multiple" style="width:18px" />
 				  
@@ -66,10 +66,10 @@
 			<p:dialog id="cadastro_dialog" widgetVar="cadastroDialog" header="Novo Registro" 
 				visible="false" modal="true" resizable="false" closable="false" width="335" height="100">					
 				
-				<div id="cadastro">										
+				<div id="novo_registro">										
 					<br />				
-					<h:outputLabel for="cadastro_nome" value="Nome: "/>
-					<p:inputText id="cadastro_nome" value="#{disciplinaController.disciplina.nome}" size="40"/>
+					<h:outputLabel for="nome" value="Nome: "/>
+					<p:inputText id="nome" value="#{disciplinaController.disciplina.nome}" size="40"/>
 					<br />
 					<p:commandButton value="Salvar" actionListener="#{disciplinaController.salvar}" 
 						update=":form_disciplinas:lista, :growl" oncomplete="cadastroDialog.hide()" style="margin: 30px 0 0 80px" />
