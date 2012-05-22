@@ -17,7 +17,7 @@
 			<div id="topo">
 				<div id="titulo">
 					<h:outputText value="Professores" styleClass="titulo" /><br />
-					<h:outputText value="Área disponível para o gerenciamento de cadastros, atualizações e remoções de professores" styleClass="sub_titulo" /><br />
+					<h:outputText value="Área disponível para gerenciamento, atualizações e remoções de professores" styleClass="sub_titulo" /><br />
 				</div>
 				<div id="imagem">
 					<p:graphicImage value="/images/capelo.png" styleClass="imagem" />
@@ -31,22 +31,23 @@
 			
 				<p:tab id="aba_cadastro" title="Cadastro">
 		
-					<div id="cadastro">
+					<div id="cadastro">						
 						
-						<h:form id="form_professor" prependId="false">
-							
+						<h:form>	
 							<br />
 							<div id="novo_registro">
 								<p:commandButton value="Novo Registro" actionListener="#{professorController.carregarPagina}" 
 									update=":tabview:form_professor, :tabview:form_table" style="float: left"
-									onclick="showAjaxStatus('#novo_registro')"/>
+									onclick="showAjaxStatus('#novo_registro')" oncomplete="hideAjaxStatus('#novo_registro')"/>
 								<div class="ajax_loader">
 									<img src="#{facesContext.externalContext.requestContextPath}/images/ajax-loader.gif" style="width: 20px; margin-top: 3px"/>
 								</div>
 							</div>	
+						</h:form>	
+						<h:form id="form_professor" prependId="false">
 							<br /><br /><br /><br />
-							<h:outputLabel for="nome" value="Nome: "/>
-							<p:spacer width="38" height="0" />
+							<h:outputLabel for="nome" value="Nome: *"/>
+							<p:spacer width="31" height="0" />
 							<p:inputText id="nome" value="#{professorController.professor.nome}" size="60"/>
 							
 							<div class="mensagem">
@@ -79,7 +80,7 @@
 				            <div id="salvar">
 					            <p:commandButton value="Salvar" actionListener="#{professorController.salvar}" 
 					            	styleClass="botao" style="float: left; margin: 0 0 20px 81px" 
-					            	update=":tabview:form_professor, :tabview:form_table"
+					            	update=":tabview:form_professor, :tabview:form_table, :growl"
 					            	onclick="showAjaxStatus('#salvar')" />
 					            <div class="ajax_loader">
 									<img src="#{facesContext.externalContext.requestContextPath}/images/ajax-loader.gif" style="margin-top: 5px"/>
@@ -100,7 +101,7 @@
 				         
 			            <h:form id="form_table" prependId="false">
 			            
-			            	<p:commandButton value="Excluir registros selecionados" onclick="confirmarExclusao.show()" style="margin: 20px 0"/>    
+			            	<p:commandButton value="Excluir registros selecionados" onclick="confirmarExclusao.show()" update=":growl" style="margin: 20px 0"/>    
 			            	
 						    <p:dataTable id="professores_table" widgetVar="professores_table" var="professor" value="#{professorController.professoresDataModel}"  
 				                paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
@@ -139,14 +140,14 @@
 		</div>
 		
 		 <h:form id="form_exclusao_dialog" prependId="false">
-		    <p:confirmDialog id="confirmar_exclusao" message="Tem certeza eu desejas excluir estas informações?"  
-                header="Confirmação de exclusão" severity="info" widgetVar="confirmarExclusao" closable="false">  
+		    <p:confirmDialog id="confirmar_exclusao" message="Tem certeza eu desejas excluir estas informaÃ§Ãµes?"  
+                header="ConfirmaÃ§Ã£o de exclusÃ£o" severity="info" widgetVar="confirmarExclusao" closable="false">  
                 
                 <div style="text-align: center">  
 			        <p:commandButton value="Sim" actionListener="#{professorController.excluir}" 
 			        	update=":tabview:form_table, :growl" oncomplete="confirmarExclusao.hide()" />
 			        <p:spacer width="15" height="0" />   
-			        <p:commandButton value="Não" onclick="confirmarExclusao.hide()" type="button" />
+			        <p:commandButton value="NÃ£o" onclick="confirmarExclusao.hide()" type="button" />
 		        </div>  
 		                  
 		    </p:confirmDialog>

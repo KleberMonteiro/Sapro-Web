@@ -233,18 +233,24 @@ public class ProfessorController implements Serializable {
 	}
 
 	public void salvar() {
-		try {
-			
-			logger.debug("Salvando...");
-
-			professor.setDisciplinas(new HashSet<Disciplina>(disciplinas
-					.getTarget()));
-			professorService.salvar(professor);
-
-			logger.debug("Registro salvo/atualizado com sucesso...");
-			
-			carregarPagina();
-
+		try {			
+			if (!professor.getNome().isEmpty()) {			
+				logger.debug("Salvando...");
+	
+				professor.setDisciplinas(new HashSet<Disciplina>(disciplinas
+						.getTarget()));
+				professorService.salvar(professor);
+				
+				carregarPagina();
+				
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage("Professor salvo com sucesso!"));
+	
+				logger.debug("Registro salvo/atualizado com sucesso...");								
+			} else {				
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage("Favor informar o nome do profesor."));				
+			}
 		} catch (Throwable e) {
 			e.printStackTrace();
 			logger.error(e.getClass() + ":" + e.getMessage());
@@ -256,23 +262,33 @@ public class ProfessorController implements Serializable {
 			
 			logger.debug("Excluindo...");
 
-			if (professoresSelecionados.length > 0) {
-				for (int i = 0; i < professoresSelecionados.length; i++) {
+			int qtdeProfesoresSelecionadas = professoresSelecionados.length;
+			
+			if (qtdeProfesoresSelecionadas > 0) {
+				for (int i = 0; i < qtdeProfesoresSelecionadas; i++) {
 					Professor professor = professoresSelecionados[i];
 					professorService.excluir(professor);
 					logger.debug("Professor: '" + professor.getNome() + "' excluído com sucesso!");
 				}
-			}
-
-			carregarProfessores();
-
-			if (professoresSelecionados.length == 1) {
+				
+				if (qtdeProfesoresSelecionadas == 1) {
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage("Professor removido com sucesso!"));
+				} else if (qtdeProfesoresSelecionadas > 1) {
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage("Professores removidos com sucesso!"));
+				}
+				
+				carregarProfessores();
+			} else {
 				FacesContext.getCurrentInstance().addMessage(null,
-						new FacesMessage("Professor removido com sucesso!"));
-			} else if (professoresSelecionados.length > 1) {
-				FacesContext.getCurrentInstance().addMessage(null,
-						new FacesMessage("Professores removidos com sucesso!"));
+						new FacesMessage("Por favor selecione ao menos um profesor!"));
 			}
+			
+
+			
+
+			
 
 		} catch (Throwable e) {
 			e.printStackTrace();
