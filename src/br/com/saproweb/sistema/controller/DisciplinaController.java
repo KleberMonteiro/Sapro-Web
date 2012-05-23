@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -22,14 +23,14 @@ public class DisciplinaController implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private Logger logger = Logger.getLogger(DisciplinaController.class);
+	private static final Logger logger = Logger
+			.getLogger(DisciplinaController.class);
 
 	@Inject
 	@Named("disciplinaService")
 	private DisciplinaService disciplinaService;
 
 	private Disciplina disciplina;
-	private Disciplina disciplinaSelecionada;
 	private List<Disciplina> disciplinas;
 	private Disciplina[] disciplinasSelecionadas;
 	private DisciplinasDataModel disciplinasDataModel;
@@ -37,80 +38,119 @@ public class DisciplinaController implements Serializable {
 	@SuppressWarnings("unused")
 	@PostConstruct
 	private void init() {
-		disciplinaSelecionada = new Disciplina();
-		criar();
-		carregarListas();
+		carregarPagina();
 	}
 
-	private void carregarListas() {
+	public void carregarPagina() {
+		try {
+			
+			if(disciplina == null)
+				disciplina = new Disciplina();
+			
+			carregarDisciplinas();
+
+		} catch (Throwable e) {
+			e.printStackTrace();
+			logger.error(e.getClass() + ":" + e.getMessage());
+		}
+	}
+
+	private void carregarDisciplinas() {
 		disciplinas = disciplinaService.buscarTodos();
 		disciplinasDataModel = new DisciplinasDataModel(disciplinas);
 		disciplinasSelecionadas = new Disciplina[disciplinas.size()];
 	}
 
-	public void criar() {
+	public void novoRegistro() {
 		disciplina = new Disciplina();
 	}
 
 	public void salvar() {
 		try {
 
-			logger.debug("Salvando disciplina...");
-			disciplinaService.salvar(disciplina);
-			carregarListas();
+			if (!disciplina.getNome().isEmpty()) {
+				logger.debug("Salvando...");
 
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage("Disciplina adicionada com sucesso!"));
+				disciplinaService.salvar(disciplina);
+
+				carregarDisciplinas();
+
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage("Disciplina salva com sucesso!"));
+
+				logger.debug("Registro salvo/atualizado com sucesso...");
+			} else {
+				FacesContext.getCurrentInstance().addMessage(
+						null,
+						new FacesMessage(FacesMessage.SEVERITY_WARN,
+								"Favor informar o nome da disciplina!", ""));
+			}
 
 		} catch (Exception e) {
-			logger.error(e.getClass() + ":" + e.getMessage());
 			e.printStackTrace();
-		}
-	}
-
-	public void atualizar() {
-		try {
-
-			logger.debug("Atualizando disciplina...");
-			disciplinaService.atualizar(disciplina);
-
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage("Disciplina atualizada com sucesso!"));
-
-		} catch (Throwable e) {
 			logger.error(e.getClass() + ":" + e.getMessage());
-			e.printStackTrace();
 		}
 	}
 
 	public void excluir() {
 		try {
 
-			logger.debug("Excluindo disciplinas...");
+			logger.debug("Excluindo...");
 
-			if (disciplinasSelecionadas.length > 0) {
-				for (int i = 0; i < disciplinasSelecionadas.length; i++) {
+			int qtdeDisciplinasSelecionadas = disciplinasSelecionadas.length;
+
+			if (qtdeDisciplinasSelecionadas > 0) {
+				for (int i = 0; i < qtdeDisciplinasSelecionadas; i++) {
 					Disciplina disciplina = disciplinasSelecionadas[i];
 					disciplinaService.excluir(disciplina);
+
+					if (this.disciplina.getId() == disciplina.getId())
+						novoRegistro();
+
+					logger.debug("Disciplina: '" + disciplina.getNome()
+							+ "' excluída com sucesso!");
 				}
 
-				carregarListas();
-				criar();
+				if (qtdeDisciplinasSelecionadas == 1) {
+					FacesContext
+							.getCurrentInstance()
+							.addMessage(
+									null,
+									new FacesMessage(
+											"Disciplina removida com sucesso!"));
+				} else if (qtdeDisciplinasSelecionadas > 1) {
+					FacesContext.getCurrentInstance().addMessage(
+							null,
+							new FacesMessage(
+									"Disciplinas removidas com sucesso!"));
+				}
 
-				FacesContext.getCurrentInstance().addMessage(
-						null,
-						new FacesMessage(
-								"Disciplina(s) removida(s) com sucesso!"));
+				carregarDisciplinas();
 			} else {
 				FacesContext.getCurrentInstance().addMessage(
 						null,
 						new FacesMessage(FacesMessage.SEVERITY_WARN,
-								"Nenhuma disciplina foi selecionada!", ""));
+								"Por favor selecione ao menos uma disciplina!",
+								""));
 			}
 
 		} catch (Throwable e) {
 			logger.error(e.getClass() + ":" + e.getMessage());
 			e.printStackTrace();
+		}
+	}
+
+	public void editar(ActionEvent actionEvent) {
+		try {
+
+			logger.debug("Capturando informações da disciplina...");
+
+			disciplina = (Disciplina) actionEvent.getComponent()
+					.getAttributes().get("disciplina");
+
+		} catch (Throwable e) {
+			e.printStackTrace();
+			logger.error(e.getClass() + ":" + e.getMessage());
 		}
 	}
 
@@ -140,14 +180,6 @@ public class DisciplinaController implements Serializable {
 
 	public DisciplinasDataModel getDisciplinasDataModel() {
 		return disciplinasDataModel;
-	}
-
-	public Disciplina getDisciplinaSelecionada() {
-		return disciplinaSelecionada;
-	}
-
-	public void setDisciplinaSelecionada(Disciplina disciplinaSelecionada) {
-		this.disciplinaSelecionada = disciplinaSelecionada;
 	}
 
 }

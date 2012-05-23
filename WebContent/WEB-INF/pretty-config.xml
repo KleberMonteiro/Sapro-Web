@@ -1,0 +1,21 @@
+<pretty-config xmlns="http://ocpsoft.com/prettyfaces-xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://ocpsoft.com/prettyfaces-xsd
+						http://ocpsoft.com/xml/ns/prettyfaces/pretty-1.0.xsd">
+
+	<url-mapping id="disciplinas">
+		<pattern>/disciplinas</pattern>
+		<view-id>/view/disciplinas/disciplinas.jsf</view-id>
+	</url-mapping>
+	
+	<url-mapping id="professores">
+		<pattern>/professores</pattern>
+		<view-id>/view/professores/professores.jsf</view-id>
+	</url-mapping>
+	
+	<url-mapping id="cursos">
+		<pattern>/cursos</pattern>
+		<view-id>/view/cursos/cursos.jsf</view-id>
+	</url-mapping>
+	
+</pretty-config>

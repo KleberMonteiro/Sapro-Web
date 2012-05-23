@@ -29,7 +29,8 @@ public class Periodo implements Serializable {
 	@Column(name = "periodo_str")
 	private String periodoStr;
 
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@ManyToMany(targetEntity = Disciplina.class, cascade = {
+		CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER)
 	@JoinTable(name = "periodo_disciplinas", joinColumns = { @JoinColumn(name = "id_periodo") }, inverseJoinColumns = { @JoinColumn(name = "id_disciplina") })
 	private Set<Disciplina> disciplinas;
 

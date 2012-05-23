@@ -2,7 +2,37 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui">		
+	xmlns:p="http://primefaces.org/ui">
 	
+	<h:outputLink value="#">
+		<div id="menu_criar_turma">
+			<span class="vertical_middle"></span>
+			<h:outputText value="Criar Turma" styleClass="texto" />
+		</div>
+	</h:outputLink>
+	
+	<h:outputLink value="/professores">
+		<div id="menu_professores" class="menu_item" rel="professores">
+			<span class="vertical_middle"></span>
+			<h:outputText value="Professores" styleClass="menu_label" />
+			<div id="menu_professores_img" class="img"></div>
+		</div>
+	</h:outputLink>	
+		
+	<h:outputLink value="/disciplinas">	
+		<div id="menu_disciplinas" class="menu_item" rel="disciplinas">
+			<span class="vertical_middle"></span>
+			<h:outputText value="Disciplinas" styleClass="menu_label" />
+			<div id="menu_disciplinas_img" class="img"></div>
+		</div>
+	</h:outputLink>	
+		
+	<h:outputLink value="/cursos">	
+		<div id="menu_cursos" class="menu_item" rel="cursos">
+			<span class="vertical_middle"></span>
+			<h:outputText value="Cursos" styleClass="menu_label" />
+			<div id="menu_cursos_img" class="img"></div>
+		</div>
+	</h:outputLink>	
 
 </ui:fragment>

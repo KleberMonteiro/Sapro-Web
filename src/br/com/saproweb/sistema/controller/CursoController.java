@@ -11,10 +11,11 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
@@ -25,16 +26,18 @@ import br.com.saproweb.sistema.dominio.entidades.Grade;
 import br.com.saproweb.sistema.dominio.entidades.Periodo;
 import br.com.saproweb.sistema.dominio.service.CursoService;
 import br.com.saproweb.sistema.dominio.service.DisciplinaService;
+import br.com.saproweb.utils.datamodel.CursosDataModel;
 import br.com.saproweb.utils.enumeration.DiaEnum;
 import br.com.saproweb.utils.enumeration.StatusEnum;
 
 @Named
-@Scope("request")
+@Scope("session")
 public class CursoController implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private Logger logger = Logger.getLogger(DisciplinaController.class);
+	private static final Logger logger = Logger
+			.getLogger(CursoController.class);
 
 	@Inject
 	@Named("cursoService")
@@ -48,11 +51,15 @@ public class CursoController implements Serializable {
 	private Grade grade;
 	private Set<Grade> grades;
 
+	private List<Curso> cursos;
 	private List<Disciplina> disciplinas;
 	private List<String> dias;
 	private List<String> periodosStr;
 	private Map<String, String> periodosMap;
 	private Map<String, Map<String, String>> gradeMap;
+
+	private CursosDataModel cursosDataModel;
+	private Curso[] cursosSelecionados;
 
 	private DiaEnum diasEnum;
 
@@ -64,22 +71,68 @@ public class CursoController implements Serializable {
 	private void init() {
 		try {
 
-			disciplinas = disciplinaService.buscarTodos();
+			carregarPagina();
+
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void carregarPagina() {
+		try {
+
+			if (curso == null)
+				curso = new Curso();
+			
+			carregarCursos();
+			carregarDisciplinas();
+			gerarDias();
+			gerarPeriodos();
+			gerarCurso();			
+
+		} catch (Throwable e) {
+			e.printStackTrace();
+			logger.error(e.getClass() + ":" + e.getMessage());
+		}
+	}
+
+	private void gerarDias() {
+		try {
+
 			dias = new ArrayList<String>();
 			for (int dia = 1; dia <= QTD_DISCIPLINAS_PERIODO; dia++) {
 				dias.add(String.valueOf(dia));
 			}
 
-			gerarPeriodos();
+		} catch (Throwable e) {
+			e.printStackTrace();
+			logger.error(e.getClass() + ":" + e.getMessage());
+		}
+	}
 
-			// Pega o parâmetro id da url
-			HttpServletRequest request = (HttpServletRequest) FacesContext
-					.getCurrentInstance().getExternalContext().getRequest();
-			String idCurso = request.getParameter("id");
+	private void gerarPeriodos() {
+		try {
 
-			if (idCurso != null) {
-				long id = Long.parseLong(idCurso);
-				curso = cursoService.buscarPorId(id);
+			periodosStr = new ArrayList<String>();
+			periodosMap = new HashMap<String, String>();
+
+			for (int i = 1; i <= QTD_PERIODOS; i++) {
+				String periodoStr = String.valueOf(i);
+				periodosStr.add(periodoStr);
+				periodosMap.put(periodoStr, periodoStr + "º Período");
+			}
+
+		} catch (Throwable e) {
+			e.printStackTrace();
+			logger.error(e.getClass() + ":" + e.getMessage());
+		}
+	}
+
+	private void gerarCurso() {
+		try {
+
+			if (curso.getId() != 0) {
+				curso = cursoService.buscarPorId(curso.getId());
 
 				if (curso != null) {
 					grades = curso.getGrades();
@@ -106,23 +159,35 @@ public class CursoController implements Serializable {
 
 		} catch (Throwable e) {
 			e.printStackTrace();
+			logger.error(e.getClass() + ":" + e.getMessage());
 		}
 	}
 
-	private void gerarPeriodos() {
+	private void carregarCursos() {
 		try {
 
-			periodosStr = new ArrayList<String>();
-			periodosMap = new HashMap<String, String>();
+			logger.debug("Carregando cursos...");
 
-			for (int i = 1; i <= QTD_PERIODOS; i++) {
-				String periodoStr = String.valueOf(i);
-				periodosStr.add(periodoStr);
-				periodosMap.put(periodoStr, periodoStr + "º Período");
-			}
+			cursos = cursoService.buscarTodos();
+			cursosSelecionados = new Curso[cursos.size()];
+			cursosDataModel = new CursosDataModel(cursos);
 
 		} catch (Throwable e) {
 			e.printStackTrace();
+			logger.error(e.getClass() + ":" + e.getMessage());
+		}
+	}
+
+	private void carregarDisciplinas() {
+		try {
+
+			logger.debug("Carregando disciplinas...");
+
+			disciplinas = disciplinaService.buscarTodos();
+
+		} catch (Throwable e) {
+			e.printStackTrace();
+			logger.error(e.getClass() + ":" + e.getMessage());
 		}
 	}
 
@@ -145,7 +210,7 @@ public class CursoController implements Serializable {
 
 						for (int index = 0; index < QTD_DISCIPLINAS_PERIODO; index++) {
 							String indexStr = String.valueOf(index + 1);
-							
+
 							try {
 								Disciplina disciplina = listaDisciplinas
 										.get(index);
@@ -173,8 +238,9 @@ public class CursoController implements Serializable {
 	}
 
 	public void novoRegistro() {
-		logger.debug("Criando novo curso...");
-		curso = new Curso();
+		logger.debug("Criando novo curso...");		
+		
+		curso = new Curso();		
 		grade = new Grade();
 		grades = new HashSet<Grade>();
 		gerarGrade();
@@ -224,12 +290,12 @@ public class CursoController implements Serializable {
 						}
 					}
 				}
-				
+
 				if (!disciplinas.isEmpty()) {
 					periodo.setPeriodoStr(periodoStr);
 					periodo.setDisciplinas(disciplinas);
 					periodos.add(periodo);
-				}				
+				}
 			}
 
 			grade.setPeriodos(periodos);
@@ -247,22 +313,93 @@ public class CursoController implements Serializable {
 	public void salvar() {
 		try {
 
-			if (!grades.isEmpty()) {
-				for (Grade grade : grades) {
-					if (grade.isAtual()) {
-						grade.setAtual(false);
-						grade.setStatus(StatusEnum.DELETADO);
+			if (!curso.getNome().isEmpty()) {
+				logger.debug("Salvando...");
+
+				if (!grades.isEmpty()) {
+					for (Grade grade : grades) {
+						if (grade.isAtual()) {
+							grade.setAtual(false);
+							grade.setStatus(StatusEnum.DELETADO);
+						}
 					}
 				}
-			}
 
-			Grade grade = criarGrade();
-			grades.add(grade);
-			curso.setGrades(grades);
-			cursoService.salvar(curso);
+				Grade grade = criarGrade();
+				grades.add(grade);
+				curso.setGrades(grades);
+				cursoService.salvar(curso);
+				
+				carregarCursos();				
+
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage("Registro salvo com sucesso!"));
+
+				logger.debug("Registro salvo/atualizado com sucesso...");
+			} else {
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage("Favor informar o nome do curso."));
+				novoRegistro();
+			}
 
 		} catch (Throwable e) {
 			e.printStackTrace();
+		}
+	}
+
+	public void excluir() {
+		try {
+
+			logger.debug("Excluindo...");
+
+			int qtdeCursosSelecionados = cursosSelecionados.length;
+
+			if (qtdeCursosSelecionados > 0) {
+				for (int i = 0; i < qtdeCursosSelecionados; i++) {
+					Curso curso = cursosSelecionados[i];					
+					cursoService.excluir(curso);
+					
+					if (this.curso.getId() == curso.getId())
+						novoRegistro();
+					
+					logger.debug("Curso: '" + curso.getNome()
+							+ "' excluído com sucesso!");
+				}
+
+				if (qtdeCursosSelecionados == 1) {
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage("Curso removido com sucesso!"));
+				} else if (qtdeCursosSelecionados > 1) {
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage("Cursos removidos com sucesso!"));
+				}
+
+				carregarCursos();
+			} else {
+				FacesContext.getCurrentInstance().addMessage(
+						null,
+						new FacesMessage(
+								"Por favor selecione ao menos um curso!"));
+			}
+
+		} catch (Throwable e) {
+			e.printStackTrace();
+			logger.error(e.getClass() + ":" + e.getMessage());
+		}
+	}
+
+	public void editar(ActionEvent actionEvent) {
+		try {
+
+			logger.debug("Capturando dados do curso...");
+
+			curso = (Curso) actionEvent.getComponent().getAttributes()
+					.get("curso");
+			gerarCurso();
+
+		} catch (Throwable e) {
+			e.printStackTrace();
+			logger.error(e.getClass() + ":" + e.getMessage());
 		}
 	}
 
@@ -320,6 +457,30 @@ public class CursoController implements Serializable {
 
 	public void setDias(List<String> dias) {
 		this.dias = dias;
+	}
+
+	public List<Curso> getCursos() {
+		return cursos;
+	}
+
+	public void setCursos(List<Curso> cursos) {
+		this.cursos = cursos;
+	}
+
+	public CursosDataModel getCursosDataModel() {
+		return cursosDataModel;
+	}
+
+	public void setCursosDataModel(CursosDataModel cursosDataModel) {
+		this.cursosDataModel = cursosDataModel;
+	}
+
+	public Curso[] getCursosSelecionados() {
+		return cursosSelecionados;
+	}
+
+	public void setCursosSelecionados(Curso[] cursosSelecionados) {
+		this.cursosSelecionados = cursosSelecionados;
 	}
 
 }

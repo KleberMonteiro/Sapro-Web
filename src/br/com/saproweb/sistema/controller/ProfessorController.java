@@ -59,7 +59,7 @@ public class ProfessorController implements Serializable {
 	@PostConstruct
 	private void init() {
 		try {
-			
+
 			carregarPagina();
 
 		} catch (Throwable e) {
@@ -70,10 +70,26 @@ public class ProfessorController implements Serializable {
 
 	public void carregarPagina() {
 		try {
-			
-			professor = new Professor();
+
+			if (professor == null)
+				professor = new Professor();
+
 			carregarProfessores();
 			carregarDisciplinas();
+
+		} catch (Throwable e) {
+			e.printStackTrace();
+			logger.error(e.getClass() + ":" + e.getMessage());
+		}
+	}
+
+	public void novoRegistro() {
+		try {
+
+			professor = new Professor();
+			disciplinasTarget = new ArrayList<Disciplina>();
+			disciplinas = new DualListModel<Disciplina>(disciplinasSource,
+					disciplinasTarget);
 
 		} catch (Throwable e) {
 			e.printStackTrace();
@@ -85,7 +101,7 @@ public class ProfessorController implements Serializable {
 		try {
 
 			logger.debug("Carregando professores...");
-			
+
 			professores = professorService.buscarTodos();
 			professoresSelecionados = new Professor[professores.size()];
 			professoresDataModel = new ProfessoresDataModel(professores);
@@ -100,7 +116,7 @@ public class ProfessorController implements Serializable {
 		try {
 
 			logger.debug("Carregando disciplinas...");
-			
+
 			disciplinasSource = disciplinaService.buscarTodos();
 			disciplinasTarget = new ArrayList<Disciplina>();
 
@@ -140,9 +156,10 @@ public class ProfessorController implements Serializable {
 		try {
 
 			logger.debug("Criando novo professor...");
-			
+
+			professor = new Professor();
 			professor.setQuadroDeHorarios(gerarQuadroDeHorarios());
-			
+
 			logger.debug("Professor criado!");
 
 		} catch (Throwable e) {
@@ -155,7 +172,7 @@ public class ProfessorController implements Serializable {
 		try {
 
 			logger.debug("Gerando novo Quadro de horarios...");
-			
+
 			QuadroDeHorarios quadroDeHorarios = new QuadroDeHorarios();
 			quadroDeHorarios.setSemana(gerarSemana());
 
@@ -170,9 +187,9 @@ public class ProfessorController implements Serializable {
 
 	private Semana gerarSemana() {
 		try {
-			
+
 			logger.debug("Gerando semana...");
-			
+
 			Semana semana = new Semana();
 			semana.setDias(gerarDias());
 
@@ -189,13 +206,14 @@ public class ProfessorController implements Serializable {
 		try {
 
 			logger.debug("Gerando dias...");
-			
+
 			Set<Dia> dias = new HashSet<Dia>();
 
 			for (int i = 0; i < DiaEnum.values().length; i++) {
 				Dia dia = new Dia();
 				dia.setDia(DiaEnum.values()[i]);
-				logger.debug("Gerando turnos de " + DiaEnum.values()[i] + " ...");
+				logger.debug("Gerando turnos de " + DiaEnum.values()[i]
+						+ " ...");
 				dia.setTurnos(gerarTurnos());
 				dia.setStatus(StatusEnum.ATIVO);
 				dias.add(dia);
@@ -212,7 +230,7 @@ public class ProfessorController implements Serializable {
 
 	private Set<Turno> gerarTurnos() {
 		try {
-			
+
 			Set<Turno> turnos = new HashSet<Turno>();
 
 			for (int i = 0; i < TurnoEnum.values().length; i++) {
@@ -233,23 +251,26 @@ public class ProfessorController implements Serializable {
 	}
 
 	public void salvar() {
-		try {			
-			if (!professor.getNome().isEmpty()) {			
+		try {
+			if (!professor.getNome().isEmpty()) {
 				logger.debug("Salvando...");
-	
+
 				professor.setDisciplinas(new HashSet<Disciplina>(disciplinas
 						.getTarget()));
 				professorService.salvar(professor);
-				
-				carregarPagina();
-				
+
+				carregarProfessores();
+
 				FacesContext.getCurrentInstance().addMessage(null,
 						new FacesMessage("Professor salvo com sucesso!"));
-	
-				logger.debug("Registro salvo/atualizado com sucesso...");								
-			} else {				
-				FacesContext.getCurrentInstance().addMessage(null,
-						new FacesMessage("Favor informar o nome do profesor."));				
+
+				logger.debug("Registro salvo/atualizado com sucesso...");
+			} else {
+				FacesContext.getCurrentInstance()
+						.addMessage(
+								null,
+								new FacesMessage(
+										"Favor informar o nome do professor."));
 			}
 		} catch (Throwable e) {
 			e.printStackTrace();
@@ -259,36 +280,44 @@ public class ProfessorController implements Serializable {
 
 	public void excluir() {
 		try {
-			
+
 			logger.debug("Excluindo...");
 
 			int qtdeProfesoresSelecionadas = professoresSelecionados.length;
-			
+
 			if (qtdeProfesoresSelecionadas > 0) {
 				for (int i = 0; i < qtdeProfesoresSelecionadas; i++) {
 					Professor professor = professoresSelecionados[i];
 					professorService.excluir(professor);
-					logger.debug("Professor: '" + professor.getNome() + "' excluído com sucesso!");
+
+					if (this.professor.getId() == professor.getId())
+						novoRegistro();
+
+					logger.debug("Professor: '" + professor.getNome()
+							+ "' excluído com sucesso!");
 				}
-				
+
 				if (qtdeProfesoresSelecionadas == 1) {
-					FacesContext.getCurrentInstance().addMessage(null,
-							new FacesMessage("Professor removido com sucesso!"));
+					FacesContext.getCurrentInstance()
+							.addMessage(
+									null,
+									new FacesMessage(
+											"Professor removido com sucesso!"));
 				} else if (qtdeProfesoresSelecionadas > 1) {
-					FacesContext.getCurrentInstance().addMessage(null,
-							new FacesMessage("Professores removidos com sucesso!"));
+					FacesContext.getCurrentInstance().addMessage(
+							null,
+							new FacesMessage(
+									"Professores removidos com sucesso!"));
 				}
-				
+
 				carregarProfessores();
 			} else {
-				FacesContext.getCurrentInstance().addMessage(null,
-						new FacesMessage("Por favor selecione ao menos um profesor!"));
+				FacesContext.getCurrentInstance().addMessage(
+						null,
+						new FacesMessage(FacesMessage.SEVERITY_WARN,
+								"Por favor selecione ao menos um professor!",
+								""));
 			}
-			
-
-			
-
-			
 
 		} catch (Throwable e) {
 			e.printStackTrace();
@@ -300,7 +329,7 @@ public class ProfessorController implements Serializable {
 		try {
 
 			logger.debug("Capturando dados do professor...");
-			
+
 			professor = (Professor) actionEvent.getComponent().getAttributes()
 					.get("professor");
 			disciplinasTarget = new ArrayList<Disciplina>(

@@ -80,9 +80,22 @@
 		<listener-class>com.sun.faces.config.ConfigureListener</listener-class>
 	</listener>
 	
+	<!-- Configuracoes do PrettyFaces -->
+	<filter>
+		<filter-name>Pretty Filter</filter-name>
+		<filter-class>com.ocpsoft.pretty.PrettyFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>Pretty Filter</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>ERROR</dispatcher>
+	</filter-mapping>
+	
 	<!-- Configurações Web Context -->
 	<welcome-file-list>
-		<welcome-file>view/cadastros/disciplina.jsf</welcome-file>
+		<welcome-file>index.jsf</welcome-file>
 	</welcome-file-list>
 
 	<session-config>
