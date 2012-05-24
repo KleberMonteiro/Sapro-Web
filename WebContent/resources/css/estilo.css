@@ -137,24 +137,7 @@ a:link, a:visited, a:active, a:hover {
 	bottom: 0;
 }
 
-#menu_criar_turma {
-	height: 40px; 
-	width: 180px; 
-	background-image: url('/images/fundo_botao_azul.png'); 
-	text-align: center; 
-	margin: 20px auto; 
-	border-width: 1px; 
-	border-style: solid; 
-	border-color: #002D59 #002D59 black;
-}
-
-#menu_criar_turma .texto {
-	vertical-align: middle; 
-	color: #F7F7F7; 
-	font-weight: bold; 
-	font-size: 10pt;
-}
-
+#menu_turmas,
 #menu_professores, 
 #menu_disciplinas, 
 #menu_cursos {
@@ -167,10 +150,6 @@ a:link, a:visited, a:active, a:hover {
 	margin-top: 30px;
 }
 
-#menu_professores {
-	margin-top: 38px;
-}
-
 .menu_label {
 	vertical-align: middle; 
 	color: #999; 
@@ -178,34 +157,33 @@ a:link, a:visited, a:active, a:hover {
 	margin-left: 70px
 }
 
-#menu_professores_img {
+.menu_item .img {
 	position: absolute; 
-	top: -18px; 
+	top: -10px; 
 	left: 10px; 
 	width: 52px;
-	height: 52px; 
-	background-image: url('/images/professores_mini.png');
+	height: 52px;
 	background-position: 0px 0px;
+	background-repeat: no-repeat; 
+}
+
+#menu_turmas_img {	
+	background-image: url('/images/turmas_mini.png');
+	top: -5px;
+	height: 43px;	
+}
+
+#menu_professores_img {	
+	background-image: url('/images/professores_mini.png');	
 }
 
 #menu_disciplinas_img {
-	position: absolute; 
-	top: -8px; 
-	left: 10px; 
-	width: 50px; 
-	height: 40px; 
 	background-image: url('/images/disciplinas_mini.png');
-	background-position: 0px 0px;
 }
 
 #menu_cursos_img {
-	position: absolute; 
-	top: -18px; 
-	left: 10px; 
-	width: 46px; 
-	height: 52px; 
 	background-image: url('/images/cursos_mini.png');
-	background-position: 0px 0px;
+	margin-left: 3px;
 }
 
 #cadastro {

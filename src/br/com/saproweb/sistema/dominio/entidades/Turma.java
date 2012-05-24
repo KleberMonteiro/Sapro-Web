@@ -1,11 +1,12 @@
 package br.com.saproweb.sistema.dominio.entidades;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,16 +29,16 @@ public class Turma implements Serializable {
 
 	@Column(name = "codigo")
 	private String codigo;
-	
+
 	@Column(name = "turma")
 	private String turma;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	private Curso curso;
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinTable(name = "turma_cadeira", joinColumns = { @JoinColumn(name = "id_turma") }, inverseJoinColumns = { @JoinColumn(name = "id_cadeira") })
-	private List<Cadeira> cadeiras;
+	private Set<Cadeira> cadeiras;
 
 	public long getId() {
 		return id;
@@ -71,12 +72,11 @@ public class Turma implements Serializable {
 		this.curso = curso;
 	}
 
-	public List<Cadeira> getCadeiras() {
+	public Set<Cadeira> getCadeiras() {
 		return cadeiras;
 	}
 
-	public void setCadeiras(List<Cadeira> cadeiras) {
+	public void setCadeiras(Set<Cadeira> cadeiras) {
 		this.cadeiras = cadeiras;
 	}
-
 }

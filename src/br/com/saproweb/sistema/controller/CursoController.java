@@ -27,7 +27,6 @@ import br.com.saproweb.sistema.dominio.entidades.Periodo;
 import br.com.saproweb.sistema.dominio.service.CursoService;
 import br.com.saproweb.sistema.dominio.service.DisciplinaService;
 import br.com.saproweb.utils.datamodel.CursosDataModel;
-import br.com.saproweb.utils.enumeration.DiaEnum;
 import br.com.saproweb.utils.enumeration.StatusEnum;
 
 @Named
@@ -60,8 +59,6 @@ public class CursoController implements Serializable {
 
 	private CursosDataModel cursosDataModel;
 	private Curso[] cursosSelecionados;
-
-	private DiaEnum diasEnum;
 
 	private static final int QTD_PERIODOS = 10;
 	private static final int QTD_DISCIPLINAS_PERIODO = 7;
@@ -441,14 +438,6 @@ public class CursoController implements Serializable {
 
 	public void setCurso(Curso curso) {
 		this.curso = curso;
-	}
-
-	public DiaEnum getDiasEnum() {
-		return diasEnum;
-	}
-
-	public void setDiasEnum(DiaEnum diasEnum) {
-		this.diasEnum = diasEnum;
 	}
 
 	public List<String> getDias() {

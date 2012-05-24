@@ -2,6 +2,7 @@ package br.com.saproweb.sistema.dominio.entidades;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -19,20 +20,20 @@ import br.com.saproweb.utils.enumeration.DiaEnum;
 public class Cadeira implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", unique = true, nullable = false)
 	private long id;
-	
+
 	@Column(name = "dia")
 	@Enumerated(EnumType.ORDINAL)
 	private DiaEnum dia;
-	
-	@OneToOne
+
+	@OneToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	private Professor professor;
-	
-	@OneToOne
+
+	@OneToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	private Disciplina disciplina;
 
 	public long getId() {

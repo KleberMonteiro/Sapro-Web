@@ -8,13 +8,6 @@ function format() {
 
 function menuLateral() {
 	$(function() {
-		$("#menu_criar_turma").hover(function() {
-			$(this).css("background-image", "url('/images/fundo_botao_azul_hover.png')");
-		},function(){
-			$(this).css("background-image", "url('/images/fundo_botao_azul.png')");
-		});		
-	});
-	$(function() {
 		var paginaAtual = $(".pagina_atual").html();		
 		$(".menu_item .img").css("background-position", "0px 0px");		
 		$(".menu_item").each(function() {

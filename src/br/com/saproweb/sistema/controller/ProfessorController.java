@@ -36,8 +36,7 @@ public class ProfessorController implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final Logger logger = Logger
-			.getLogger(ProfessorController.class);
+	private static Logger logger = Logger.getLogger(ProfessorController.class);
 
 	@Inject
 	@Named("professorService")
