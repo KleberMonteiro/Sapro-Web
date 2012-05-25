@@ -28,11 +28,8 @@ public class Turno implements Serializable {
 	@Enumerated(EnumType.ORDINAL)
 	private TurnoEnum turno;
 	
-	@Column(name = "horario_1")
-	private boolean horario1 = false;
-	
-	@Column(name = "horario_2")
-	private boolean horario2 = false;
+	@Column(name = "disponivel")
+	private boolean disponivel = false;
 
 	// Gets e Sets
 	public long getId() {
@@ -51,20 +48,12 @@ public class Turno implements Serializable {
 		this.turno = turno;
 	}
 
-	public boolean isHorario1() {
-		return horario1;
+	public boolean isDisponivel() {
+		return disponivel;
 	}
 
-	public void setHorario1(boolean horario1) {
-		this.horario1 = horario1;
+	public void setDisponivel(boolean disponivel) {
+		this.disponivel = disponivel;
 	}
-
-	public boolean isHorario2() {
-		return horario2;
-	}
-
-	public void setHorario2(boolean horario2) {
-		this.horario2 = horario2;
-	}	
 
 }

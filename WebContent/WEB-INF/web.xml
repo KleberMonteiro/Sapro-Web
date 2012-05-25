@@ -95,7 +95,7 @@
 	
 	<!-- Configurações Web Context -->
 	<welcome-file-list>
-		<welcome-file>index.jsf</welcome-file>
+		<welcome-file>/view/turmas/turmas.jsf</welcome-file>
 	</welcome-file-list>
 
 	<session-config>

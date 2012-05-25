@@ -1,6 +1,8 @@
 package br.com.saproweb.sistema.dominio.entidades;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -16,6 +18,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import br.com.saproweb.utils.enumeration.DiaEnum;
 import br.com.saproweb.utils.enumeration.StatusEnum;
@@ -43,6 +46,10 @@ public class Dia implements Serializable {
 	@Column(name = "status")
 	@Enumerated(EnumType.ORDINAL)
 	private StatusEnum status;
+	
+	@SuppressWarnings("unused")
+	@Transient
+	private List<Turno> listaTurnos;
 
 	//Gets e Sets
 	public long getId() {
@@ -72,9 +79,17 @@ public class Dia implements Serializable {
 	public StatusEnum getStatus() {
 		return status;
 	}
-
+	
 	public void setStatus(StatusEnum status) {
 		this.status = status;
-	}		
+	}	
+
+	public List<Turno> getListaTurnos() {
+		return new ArrayList<Turno>(turnos);
+	}
+
+	public void setListaTurnos(List<Turno> listaTurnos) {
+		this.listaTurnos = listaTurnos;
+	}	
 
 }

@@ -6,6 +6,10 @@
 	xmlns:p="http://primefaces.org/ui">	
 
 	<ui:define name="page_content">
+	
+		<h:form>
+			<p:remoteCommand actionListener="#{disciplinaController.carregarPagina}" autoRun="true" update=":tabview:form_cadastro, :tabview:form_consulta"/>
+		</h:form>
 			
 		<p:growl id="growl" life="5000"/>
 		

@@ -6,6 +6,10 @@
 	xmlns:p="http://primefaces.org/ui">	
 
 	<ui:define name="page_content">
+	
+		<h:form>
+			<p:remoteCommand actionListener="#{turmaController.carregarPagina}" autoRun="true" update=":tabview:form_curso, :tabview:form_cadeiras"/>
+		</h:form>
 			
 		<p:growl id="growl" life="5000"/>
 		
@@ -34,7 +38,7 @@
 		            		<div class="tab_top_left">
 		            			<h:form>
 			            			<p:commandButton value="Novo Registro" style="float: left" actionListener="#{turmaController.novoRegistro}"
-			            				update=":tabview:form_curso, :tabview:form_grade"
+			            				update=":tabview:form_curso, :tabview:form_cadeiras"
 										onclick="showAjaxLoader('cadastro')" oncomplete="hideAjaxLoader('cadastro')"/>																			
 								</h:form>
 		            		</div>
@@ -75,7 +79,7 @@
 			        		
 			        		<div style="float: left; margin-top: 13px">			        		
 				        		<p:commandButton value="Alocar Professores" actionListener="#{turmaController.alocarProfessores}" 
-									update=":tabview:form_grade, :growl" onclick="showAjaxLoader('cadastro')" oncomplete="hideAjaxLoader('cadastro')"/>
+									update=":tabview:form_cadeiras, :growl" onclick="showAjaxLoader('cadastro')" oncomplete="hideAjaxLoader('cadastro')"/>
 							</div>
 							
 							<p:remoteCommand name="carregarPeriodos" actionListener="#{turmaController.carregarPeriodos}" 
@@ -87,10 +91,13 @@
 									
 						</h:form>
 						
-						<h:form id="form_grade" prependId="false">
-							<ui:repeat var="disciplina" value="#{turmaController.disciplinas}">
-								#{disciplina.nome} <br />
-							</ui:repeat>							
+						<h:form id="form_cadeiras" prependId="false">
+							<ui:repeat var="cadeira" value="#{turmaController.cadeiras}">
+								#{cadeira.disciplina.nome} - #{cadeira.professor.nome} <br />
+							</ui:repeat>
+							
+							<br />
+														
 						</h:form>
 						
 					</div>

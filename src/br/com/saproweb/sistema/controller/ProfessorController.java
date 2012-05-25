@@ -85,7 +85,7 @@ public class ProfessorController implements Serializable {
 	public void novoRegistro() {
 		try {
 
-			professor = new Professor();
+			gerarProfessor();
 			disciplinasTarget = new ArrayList<Disciplina>();
 			disciplinas = new DualListModel<Disciplina>(disciplinasSource,
 					disciplinasTarget);
@@ -235,8 +235,7 @@ public class ProfessorController implements Serializable {
 			for (int i = 0; i < TurnoEnum.values().length; i++) {
 				Turno turno = new Turno();
 				turno.setTurno(TurnoEnum.values()[i]);
-				turno.setHorario1(false);
-				turno.setHorario2(false);
+				turno.setDisponivel(false);
 				turnos.add(turno);
 			}
 
@@ -256,6 +255,7 @@ public class ProfessorController implements Serializable {
 
 				professor.setDisciplinas(new HashSet<Disciplina>(disciplinas
 						.getTarget()));
+
 				professorService.salvar(professor);
 
 				carregarProfessores();
@@ -340,22 +340,6 @@ public class ProfessorController implements Serializable {
 			logger.error(e.getClass() + ":" + e.getMessage());
 		}
 	}
-
-	// public void testar() {
-	// Professor prof = professores.get(0);
-	// System.out.println(prof.getNome());
-	// System.out.println(prof.getMatricula());
-	//
-	// for (Dia dia : prof.getQuadroDeHorarios().getSemana().getDias()) {
-	// System.out.println("----------- " + dia.getDia() + " -----------");
-	// for (Turno turno : dia.getTurnos()) {
-	// System.out.print(turno.getTurno());
-	// System.out.println(" ( " + turno.isHorario1() + " , "
-	// + turno.isHorario2() + " ) ");
-	// }
-	// System.out.println("");
-	// }
-	// }
 
 	// Gets e Sets
 	public Professor getProfessor() {

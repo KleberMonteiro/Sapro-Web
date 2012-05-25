@@ -15,6 +15,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "professor")
@@ -40,6 +41,9 @@ public class Professor implements Serializable{
 		CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER)
 	@JoinTable(name = "professor_disciplina", joinColumns = @JoinColumn(name = "id_professor"), inverseJoinColumns = @JoinColumn(name = "id_disciplina"))
 	private Set<Disciplina> disciplinas;
+		
+	@Transient
+	private int prioridade;
 
 	// Gets e Sets
 	public long getId() {
@@ -80,6 +84,14 @@ public class Professor implements Serializable{
 
 	public void setQuadroDeHorarios(QuadroDeHorarios quadroDeHorarios) {
 		this.quadroDeHorarios = quadroDeHorarios;
+	}
+
+	public int getPrioridade() {
+		return prioridade;
+	}
+
+	public void setPrioridade(int prioridade) {
+		this.prioridade = prioridade;
 	}
 
 }
