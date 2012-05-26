@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -25,9 +26,11 @@ import br.com.saproweb.sistema.dominio.entidades.Disciplina;
 import br.com.saproweb.sistema.dominio.entidades.Grade;
 import br.com.saproweb.sistema.dominio.entidades.Periodo;
 import br.com.saproweb.sistema.dominio.entidades.Professor;
+import br.com.saproweb.sistema.dominio.entidades.Turma;
 import br.com.saproweb.sistema.dominio.entidades.Turno;
 import br.com.saproweb.sistema.dominio.service.CursoService;
 import br.com.saproweb.sistema.dominio.service.ProfessorService;
+import br.com.saproweb.sistema.dominio.service.TurmaService;
 import br.com.saproweb.utils.comparator.PrioridadeComparator;
 import br.com.saproweb.utils.enumeration.DiaEnum;
 import br.com.saproweb.utils.enumeration.TurnoEnum;
@@ -41,12 +44,18 @@ public class TurmaController implements Serializable {
 	private static Logger logger = Logger.getLogger(TurmaController.class);
 
 	@Inject
+	@Named("turmaService")
+	private TurmaService turmaService;
+
+	@Inject
 	@Named("cursoService")
 	private CursoService cursoService;
 
 	@Inject
 	@Named("professorService")
 	private ProfessorService professorService;
+
+	private Turma turma;
 
 	private Curso curso;
 	private Curso cursoSelecionado;
@@ -64,6 +73,9 @@ public class TurmaController implements Serializable {
 	private List<Disciplina> disciplinas;
 	private List<Cadeira> cadeiras;
 	private List<Professor> professores;
+
+	@SuppressWarnings("unused")
+	private String atualizarPagina;
 
 	Map<Disciplina, List<Professor>> professoresPorDisciplinaMap;
 
@@ -226,6 +238,18 @@ public class TurmaController implements Serializable {
 						carregarProfessores();
 						agruparProfessoresPorDisciplinas();
 						carregarCadeiras();
+						atribuirDias();
+
+						turma = new Turma();
+						turma.setTurma("MA");
+						turma.setCurso(curso);
+						turma.setCadeiras(new HashSet<Cadeira>(cadeiras));
+
+						turmaService.salvar(turma);
+
+						for (Cadeira cadeira : cadeiras) {
+							professorService.atualizar(cadeira.getProfessor());
+						}
 
 					} else {
 						FacesContext.getCurrentInstance().addMessage(
@@ -403,25 +427,45 @@ public class TurmaController implements Serializable {
 	private void atribuirDias() {
 		try {
 
-			List<DiaEnum> diasEnum = new ArrayList<DiaEnum>();
-			for (DiaEnum diaEnum : DiaEnum.values()) {
-				diasEnum.add(diaEnum);
+			List<DiaEnum> diasSelecionados = new ArrayList<DiaEnum>();
+
+			for (Cadeira cadeira : cadeiras) {
+				Professor professor = cadeira.getProfessor();
+
+				if (professor != null) {
+					for (DiaEnum dia : DiaEnum.values()) {						
+						if(dia.ordinal() == cadeiras.size()){
+							break;
+						}
+						
+						Turno turnoProfessor = capturarTurno(professor, dia,
+								turno);						
+
+						if (!diasSelecionados.contains(dia)
+								&& turnoProfessor.isDisponivel()) {
+							cadeira.setDia(dia);
+							diasSelecionados.add(dia);
+							turnoProfessor.setDisponivel(false);
+							break;
+						}
+					}
+				}
 			}
 
 			for (Cadeira cadeira : cadeiras) {
-				List<Dia> dias = cadeira.getProfessor().getQuadroDeHorarios()
-						.getSemana().getListaDias();
+				Professor professor = cadeira.getProfessor();
 
-				for (DiaEnum diaEnum : diasEnum) {
-					for (Dia dia : dias) {
-						if (diaEnum == dia.getDia()) {
-							for(Turno turno : dia.getListaTurnos()){
-								if(turno.isDisponivel()){
-									cadeira.setDia(diaEnum);
-								}
-							}
-						}
-					}
+				if (professor == null && cadeira.getDia() == null) {
+					FacesContext
+							.getCurrentInstance()
+							.addMessage(
+									null,
+									new FacesMessage(
+											FacesMessage.SEVERITY_WARN,
+											"Não foi possivel alocar todos os professores!",
+											""));
+
+					break;
 				}
 			}
 
@@ -429,6 +473,27 @@ public class TurmaController implements Serializable {
 			e.printStackTrace();
 			logger.error(e.getClass() + ":" + e.getMessage());
 		}
+	}
+
+	private Turno capturarTurno(Professor professor, DiaEnum diaEnum,
+			TurnoEnum turnoEnum) {
+		Turno turno = new Turno();
+
+		List<Dia> dias = professor.getQuadroDeHorarios().getSemana()
+				.getListaDias();
+		for (Dia dia : dias) {
+			if (diaEnum == dia.getDia()) {
+				for (Turno turno2 : dia.getListaTurnos()) {
+					if (turno2.getTurno() == turnoEnum) {
+						turno = turno2;
+						break;
+					}
+				}
+				break;
+			}
+		}
+
+		return turno;
 	}
 
 	public Curso getCurso() {
@@ -518,6 +583,23 @@ public class TurmaController implements Serializable {
 	public void setProfessoresPorDisciplinaMap(
 			Map<Disciplina, List<Professor>> professoresPorDisciplinaMap) {
 		this.professoresPorDisciplinaMap = professoresPorDisciplinaMap;
+	}
+
+	public String getAtualizarPagina() {
+		carregarPagina();
+		return "";
+	}
+
+	public void setAtualizarPagina(String atualizarPagina) {
+		this.atualizarPagina = atualizarPagina;
+	}
+
+	public Turma getTurma() {
+		return turma;
+	}
+
+	public void setTurma(Turma turma) {
+		this.turma = turma;
 	}
 
 }

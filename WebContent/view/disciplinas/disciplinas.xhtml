@@ -7,9 +7,7 @@
 
 	<ui:define name="page_content">
 	
-		<h:form>
-			<p:remoteCommand actionListener="#{disciplinaController.carregarPagina}" autoRun="true" update=":tabview:form_cadastro, :tabview:form_consulta"/>
-		</h:form>
+		<h:inputHidden value="#{disciplinaController.atualizarPagina}" />
 			
 		<p:growl id="growl" life="5000"/>
 		

@@ -64,6 +64,9 @@ public class CursoController implements Serializable {
 	private static final int QTD_DISCIPLINAS_PERIODO = 7;
 
 	@SuppressWarnings("unused")
+	private String atualizarPagina;
+
+	@SuppressWarnings("unused")
 	@PostConstruct
 	private void init() {
 		try {
@@ -80,12 +83,12 @@ public class CursoController implements Serializable {
 
 			if (curso == null)
 				curso = new Curso();
-			
+
 			carregarCursos();
 			carregarDisciplinas();
 			gerarDias();
 			gerarPeriodos();
-			gerarCurso();			
+			gerarCurso();
 
 		} catch (Throwable e) {
 			e.printStackTrace();
@@ -235,9 +238,9 @@ public class CursoController implements Serializable {
 	}
 
 	public void novoRegistro() {
-		logger.debug("Criando novo curso...");		
-		
-		curso = new Curso();		
+		logger.debug("Criando novo curso...");
+
+		curso = new Curso();
 		grade = new Grade();
 		grades = new HashSet<Grade>();
 		gerarGrade();
@@ -326,8 +329,8 @@ public class CursoController implements Serializable {
 				grades.add(grade);
 				curso.setGrades(grades);
 				cursoService.salvar(curso);
-				
-				carregarCursos();				
+
+				carregarCursos();
 
 				FacesContext.getCurrentInstance().addMessage(null,
 						new FacesMessage("Registro salvo com sucesso!"));
@@ -353,12 +356,12 @@ public class CursoController implements Serializable {
 
 			if (qtdeCursosSelecionados > 0) {
 				for (int i = 0; i < qtdeCursosSelecionados; i++) {
-					Curso curso = cursosSelecionados[i];					
+					Curso curso = cursosSelecionados[i];
 					cursoService.excluir(curso);
-					
+
 					if (this.curso.getId() == curso.getId())
 						novoRegistro();
-					
+
 					logger.debug("Curso: '" + curso.getNome()
 							+ "' excluído com sucesso!");
 				}
@@ -472,4 +475,12 @@ public class CursoController implements Serializable {
 		this.cursosSelecionados = cursosSelecionados;
 	}
 
+	public String getAtualizarPagina() {
+		carregarPagina();
+		return "";
+	}
+
+	public void setAtualizarPagina(String atualizarPagina) {
+		this.atualizarPagina = atualizarPagina;
+	}
 }

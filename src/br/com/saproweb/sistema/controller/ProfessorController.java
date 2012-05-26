@@ -53,6 +53,9 @@ public class ProfessorController implements Serializable {
 	private List<Disciplina> disciplinasTarget;
 	private DualListModel<Disciplina> disciplinas;
 	private ProfessoresDataModel professoresDataModel;
+	
+	@SuppressWarnings("unused")
+	private String atualizarPagina;
 
 	@SuppressWarnings("unused")
 	@PostConstruct
@@ -235,7 +238,7 @@ public class ProfessorController implements Serializable {
 			for (int i = 0; i < TurnoEnum.values().length; i++) {
 				Turno turno = new Turno();
 				turno.setTurno(TurnoEnum.values()[i]);
-				turno.setDisponivel(false);
+				turno.setDisponivel(true);
 				turnos.add(turno);
 			}
 
@@ -381,5 +384,14 @@ public class ProfessorController implements Serializable {
 	public void setProfessoresDataModel(
 			ProfessoresDataModel professoresDataModel) {
 		this.professoresDataModel = professoresDataModel;
+	}
+
+	public String getAtualizarPagina() {
+		carregarPagina();
+		return "";
+	}
+
+	public void setAtualizarPagina(String atualizarPagina) {
+		this.atualizarPagina = atualizarPagina;
 	}
 }

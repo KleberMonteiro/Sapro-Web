@@ -6,9 +6,9 @@
 	xmlns:p="http://primefaces.org/ui">	
 
 	<ui:define name="page_content">
-	
+		
 		<h:form>
-			<p:remoteCommand actionListener="#{turmaController.carregarPagina}" autoRun="true" update=":tabview:form_curso, :tabview:form_cadeiras"/>
+			<h:inputHidden value="#{turmaController.atualizarPagina}"/>
 		</h:form>
 			
 		<p:growl id="growl" life="5000"/>
@@ -93,10 +93,12 @@
 						
 						<h:form id="form_cadeiras" prependId="false">
 							<ui:repeat var="cadeira" value="#{turmaController.cadeiras}">
-								#{cadeira.disciplina.nome} - #{cadeira.professor.nome} <br />
+								#{cadeira.disciplina.nome} - #{cadeira.professor.nome} - #{cadeira.dia}<br />
 							</ui:repeat>
 							
 							<br />
+							
+							
 														
 						</h:form>
 						

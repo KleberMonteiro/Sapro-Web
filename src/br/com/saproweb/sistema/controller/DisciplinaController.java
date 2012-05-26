@@ -34,6 +34,9 @@ public class DisciplinaController implements Serializable {
 	private List<Disciplina> disciplinas;
 	private Disciplina[] disciplinasSelecionadas;
 	private DisciplinasDataModel disciplinasDataModel;
+	
+	@SuppressWarnings("unused")
+	private String atualizarPagina;
 
 	@SuppressWarnings("unused")
 	@PostConstruct
@@ -180,6 +183,15 @@ public class DisciplinaController implements Serializable {
 
 	public DisciplinasDataModel getDisciplinasDataModel() {
 		return disciplinasDataModel;
+	}
+
+	public String getAtualizarPagina() {
+		carregarPagina();
+		return "";
+	}
+
+	public void setAtualizarPagina(String atualizarPagina) {
+		this.atualizarPagina = atualizarPagina;
 	}
 
 }
