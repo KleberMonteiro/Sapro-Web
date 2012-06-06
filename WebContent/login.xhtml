@@ -1,0 +1,54 @@
+<ui:composition template="view/faces/default.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jstl/core">
+
+	<ui:define name="content_landing">
+		
+		<div id="login">						
+							
+			<h:form id="form_login" prependId="false">				
+				<div id="label">
+					<h:outputLabel for="j_username" value="E-mail:" styleClass="label"/>
+				</div>
+				<div id="fundo_username">
+					<h:inputText id="j_username" size="40" maxlength="80" styleClass="username" value="#{loginController.username}" />
+				</div>
+				<div class="error_message">
+					<p:message for="j_username"/>
+				</div>
+				<div id="label">
+					<h:outputLabel for="j_password" value="Senha:" styleClass="label"/>
+				</div>
+				<div id="input_senha">
+					<div id="fundo_password" style="width:150px;">
+						<h:inputSecret id="j_password" size="40" styleClass="password" value="#{loginController.password}" />
+					</div>
+				</div>
+				<div class="plataforma"></div>
+				<div id="mensagens">
+					<p:outputPanel rendered="#{param.erro}">
+						<h:outputText value=" Usuário ou senha incorretos!" style="color: #FFFF66; vertical-align: middle" />
+					</p:outputPanel>										
+												
+					
+					<p:outputPanel rendered="#{param.logout}">							
+						<h:outputText value=" Logout feito com sucesso!" style="color: #FEECFA; vertical-align: middle" />
+					</p:outputPanel>	
+				</div>
+				<div class="plataforma"></div>
+				
+				<p:commandButton value="ENTRAR" styleClass="botao entrar" action="#{loginController.doLogin}" update="form_login"/>
+				
+				<div class="plataforma"></div>
+				
+		    </h:form>
+			
+		</div>
+				
+	</ui:define>
+		
+</ui:composition>

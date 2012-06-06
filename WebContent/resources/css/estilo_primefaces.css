@@ -79,3 +79,9 @@
 	padding: 50px !important;
 	
 }
+
+.ui-fieldset-legend {
+	background: #D7E7F3 !important;
+	color: #666 !important;
+	border: 1px solid #BBB !important;
+}

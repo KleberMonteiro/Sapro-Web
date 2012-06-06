@@ -23,4 +23,9 @@
 		<view-id>/view/turmas/turmas.jsf</view-id>
 	</url-mapping>
 	
+	<url-mapping id="login">
+		<pattern>/login</pattern>
+		<view-id>/login.jsf</view-id>
+	</url-mapping>
+	
 </pretty-config>

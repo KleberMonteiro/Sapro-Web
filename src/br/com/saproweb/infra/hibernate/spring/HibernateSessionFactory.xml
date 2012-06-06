@@ -20,6 +20,8 @@ http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 				<value>br.com.saproweb.sistema.dominio.entidades.Dia</value>
 				<value>br.com.saproweb.sistema.dominio.entidades.Turma</value>
 				<value>br.com.saproweb.sistema.dominio.entidades.Cadeira</value>
+				<value>br.com.saproweb.sistema.dominio.entidades.Usuario</value>
+				<value>br.com.saproweb.sistema.dominio.entidades.Permissao</value>
 			</list>
 		</property>
 		<property name="dataSource">

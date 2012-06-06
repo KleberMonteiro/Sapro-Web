@@ -12,6 +12,7 @@
 	<!-- SPRING imports -->
     <import resource="classpath:br/com/saproweb/infra/hibernate/spring/HibernateSessionFactory.xml" />
 	<import resource="classpath:br/com/saproweb/infra/resources/DataSource.xml" />
+	<import resource="classpath:br/com/saproweb/infra/resources/spring-security.xml" />
 
 	<!-- SPRING mappings -->
 	<context:component-scan base-package="br.com.saproweb.sistema.dominio.entidades"/>

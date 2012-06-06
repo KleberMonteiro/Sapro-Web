@@ -32,6 +32,7 @@ import br.com.saproweb.sistema.dominio.service.CursoService;
 import br.com.saproweb.sistema.dominio.service.ProfessorService;
 import br.com.saproweb.sistema.dominio.service.TurmaService;
 import br.com.saproweb.utils.comparator.PrioridadeComparator;
+import br.com.saproweb.utils.datamodel.TurmasDataModel;
 import br.com.saproweb.utils.enumeration.DiaEnum;
 import br.com.saproweb.utils.enumeration.TurnoEnum;
 
@@ -56,6 +57,9 @@ public class TurmaController implements Serializable {
 	private ProfessorService professorService;
 
 	private Turma turma;
+	private List<Turma> turmas;
+	private Turma[] turmasSelecionadas;
+	private TurmasDataModel turmasDataModel;
 
 	private Curso curso;
 	private Curso cursoSelecionado;
@@ -70,9 +74,16 @@ public class TurmaController implements Serializable {
 	private String turnoSelecionado;
 	private TurnoEnum turno;
 
+	private List<DiaEnum> dias;
+
 	private List<Disciplina> disciplinas;
 	private List<Cadeira> cadeiras;
 	private List<Professor> professores;
+	private List<Professor> professoresRelacionados;
+
+	private Map<DiaEnum, Disciplina> diaDisciplinaMap;
+	private Map<DiaEnum, Professor> diaProfessorMap;
+	private Map<DiaEnum, List<Professor>> diaProfessoresMap;
 
 	@SuppressWarnings("unused")
 	private String atualizarPagina;
@@ -101,7 +112,7 @@ public class TurmaController implements Serializable {
 			turnoSelecionado = "";
 			carregarPagina();
 			carregarPeriodos();
-			carregarDisicplinas();
+			carregarDisciplinas();
 
 		} catch (Throwable e) {
 			e.printStackTrace();
@@ -112,8 +123,17 @@ public class TurmaController implements Serializable {
 	public void carregarPagina() {
 		try {
 
+			turmas = turmaService.buscarTodos();
+			turmasSelecionadas = new Turma[turmas.size()];
+			turmasDataModel = new TurmasDataModel(turmas);
+
 			carregarCursos();
 			carregarTurnos();
+			carregarDias();
+			carregarDisciplinas();
+
+			professores = professorService.buscarTodos();
+			carregarProfessores();
 
 		} catch (Throwable e) {
 			e.printStackTrace();
@@ -124,7 +144,9 @@ public class TurmaController implements Serializable {
 	private void carregarCursos() {
 		try {
 
-			cursoSelecionado = new Curso();
+			if (cursoSelecionado == null)
+				cursoSelecionado = new Curso();
+
 			cursos = cursoService.buscarTodos();
 
 		} catch (Throwable e) {
@@ -147,12 +169,18 @@ public class TurmaController implements Serializable {
 		}
 	}
 
-	private void carregarTurnoSelecionado() {
+	private void carregarDias() {
 		try {
 
-			for (TurnoEnum turno : TurnoEnum.values()) {
-				if (turno.getLabel().equalsIgnoreCase(turnoSelecionado))
-					this.turno = turno;
+			if (diaDisciplinaMap == null)
+				diaDisciplinaMap = new HashMap<DiaEnum, Disciplina>();
+
+			dias = new ArrayList<DiaEnum>();
+			for (DiaEnum dia : DiaEnum.values()) {
+				dias.add(dia);
+
+				if (diaDisciplinaMap.size() < 7)
+					diaDisciplinaMap.put(dia, new Disciplina());
 			}
 
 		} catch (Throwable e) {
@@ -220,6 +248,282 @@ public class TurmaController implements Serializable {
 				}
 			}
 
+			if (!periodoSelecionado.isEmpty()) {
+				carregarDisciplinas();
+			}
+
+		} catch (Throwable e) {
+			e.printStackTrace();
+			logger.error(e.getClass() + ":" + e.getMessage());
+		}
+	}
+
+	public void carregarTurnoSelecionado() {
+		try {
+
+			boolean vazio = true;
+
+			for (TurnoEnum turno : TurnoEnum.values()) {
+				if (turno.getLabel().equalsIgnoreCase(turnoSelecionado)) {
+					this.turno = turno;
+					vazio = false;
+				}
+			}
+
+			if (vazio)
+				this.turno = null;
+
+		} catch (Throwable e) {
+			e.printStackTrace();
+			logger.error(e.getClass() + ":" + e.getMessage());
+		}
+	}
+
+	public void carregarDisciplinas() {
+		try {
+
+			if (periodos != null)
+				carregarPeriodoSelecionado();
+
+			if (periodo != null)
+				disciplinas = new ArrayList<Disciplina>(
+						periodo.getDisciplinas());
+			else
+				disciplinas = new ArrayList<Disciplina>();
+
+		} catch (Throwable e) {
+			e.printStackTrace();
+			logger.error(e.getClass() + ":" + e.getMessage());
+		}
+	}
+
+	private void carregarPeriodoSelecionado() {
+		try {
+
+			boolean vazio = true;
+
+			for (Periodo periodoSelecionado : periodos) {
+				if (periodoSelecionado.getPeriodoStr().equals(
+						this.periodoSelecionado)) {
+					periodo = periodoSelecionado;
+					vazio = false;
+				}
+			}
+			if (vazio)
+				periodo = null;
+
+		} catch (Throwable e) {
+			e.printStackTrace();
+			logger.error(e.getClass() + ":" + e.getMessage());
+		}
+	}
+
+	public void carregarProfessores() {
+		try {
+
+			if (professoresRelacionados == null)
+				professoresRelacionados = new ArrayList<Professor>();
+
+			for (Professor professor : professores) {
+				for (Disciplina disciplina : disciplinas) {
+					for (Disciplina disciplinaProfessor : professor
+							.getDisciplinas()) {
+						if (disciplina.getId() == disciplinaProfessor.getId()) {
+							boolean contem = false;
+
+							for (Professor professorRelacionado : professoresRelacionados) {
+								if (professorRelacionado.getId() == professor
+										.getId())
+									contem = true;
+							}
+
+							if (!contem)
+								professoresRelacionados.add(professor);
+						}
+					}
+				}
+			}
+
+			carregarDiaProfessoresMap();
+
+		} catch (Throwable e) {
+			e.printStackTrace();
+			logger.error(e.getClass() + ":" + e.getMessage());
+		}
+	}
+
+	private void carregarDiaProfessoresMap() {
+		try {
+
+			if (diaProfessorMap == null)
+				diaProfessorMap = new HashMap<DiaEnum, Professor>();
+
+			if (diaProfessoresMap == null)
+				diaProfessoresMap = new HashMap<DiaEnum, List<Professor>>();
+
+			for (DiaEnum dia : DiaEnum.values()) {
+				List<Professor> professoresDisponiveis = new ArrayList<Professor>();
+
+				if (diaProfessorMap.size() < 7)
+					diaProfessorMap.put(dia, new Professor());
+
+				if (this.turno != null) {
+
+					for (Professor professor : professoresRelacionados) {
+						Turno turno = capturarTurno(professor, dia, this.turno);
+
+						if (turno.isDisponivel()
+								&& !professoresDisponiveis.contains(professor)) {
+							professoresDisponiveis.add(professor);
+						}
+					}
+
+				}
+
+				diaProfessoresMap.put(dia, professoresDisponiveis);
+			}
+
+			filtrarProfessoresDisponiveis();
+
+		} catch (Throwable e) {
+			e.printStackTrace();
+			logger.error(e.getClass() + ":" + e.getMessage());
+		}
+	}
+
+	private Turno capturarTurno(Professor professor, DiaEnum diaEnum,
+			TurnoEnum turnoEnum) {
+		Turno turno = new Turno();
+
+		List<Dia> dias = professor.getQuadroDeHorarios().getSemana()
+				.getListaDias();
+		for (Dia dia : dias) {
+			if (diaEnum == dia.getDia()) {
+				for (Turno turno2 : dia.getListaTurnos()) {
+					if (turno2.getTurno() == turnoEnum) {
+						turno = turno2;
+						break;
+					}
+				}
+				break;
+			}
+		}
+
+		return turno;
+	}
+
+	private void filtrarProfessoresDisponiveis() {
+
+		for (Entry<DiaEnum, Disciplina> entry : diaDisciplinaMap.entrySet()) {
+			DiaEnum dia = entry.getKey();
+			Disciplina disciplinaSelecionada = entry.getValue();
+
+			List<Professor> professores = diaProfessoresMap.get(dia);
+			List<Professor> professoresTemp = new ArrayList<Professor>();
+
+			for (Professor professor : professores) {
+				for (Disciplina disciplinaProfessor : professor
+						.getDisciplinas()) {
+					if (disciplinaProfessor.getId() != disciplinaSelecionada
+							.getId()) {
+						professoresTemp.add(professor);
+						break;
+					}
+				}
+			}
+
+			professores.removeAll(professoresTemp);
+		}
+	}
+	
+	public void excluir() {
+		try {
+
+			
+
+		} catch (Throwable e) {
+			e.printStackTrace();
+			logger.error(e.getClass() + ":" + e.getMessage());
+		}
+	}
+
+	public void salvar() {
+		try {
+
+			turma = new Turma();
+			turma.setCurso(curso);
+			turma.setCadeiras(criarCadeiras());			
+
+			turmaService.salvar(turma);
+
+		} catch (Throwable e) {
+			e.printStackTrace();
+			logger.error(e.getClass() + ":" + e.getMessage());
+		}
+	}
+
+	private Set<Cadeira> criarCadeiras() {
+
+		validarProfessores();
+		validarDisciplinas();
+
+		Set<Cadeira> cadeiras = new HashSet<Cadeira>();
+
+		for (DiaEnum dia : DiaEnum.values()) {
+			Professor professor = diaProfessorMap.get(dia);
+			Disciplina disciplina = diaDisciplinaMap.get(dia);
+
+			if (professor.getId() > 0) {
+				Turno turno = capturarTurno(professor, dia, this.turno);
+				turno.setDisponivel(false);
+
+				Cadeira cadeira = new Cadeira();
+				cadeira.setDia(dia);
+				cadeira.setProfessor(professor);
+				cadeira.setDisciplina(disciplina);
+
+				cadeiras.add(cadeira);
+
+			}
+		}
+
+		return cadeiras;
+	}
+
+	private void validarProfessores() {
+		try {
+
+			for (Professor professor : professores) {
+				for (Professor professorSelecionado : diaProfessorMap.values()) {
+					if (professorSelecionado.getId() == professor.getId()) {
+						professorSelecionado.setNome(professor.getNome());
+						professorSelecionado.setQuadroDeHorarios(professor
+								.getQuadroDeHorarios());
+						professorSelecionado.setDisciplinas(professor
+								.getDisciplinas());
+						professorSelecionado.setMatricula(professor
+								.getMatricula());
+					}
+				}
+			}
+
+		} catch (Throwable e) {
+			e.printStackTrace();
+			logger.error(e.getClass() + ":" + e.getMessage());
+		}
+	}
+
+	private void validarDisciplinas() {
+		try {
+
+			for (Disciplina disciplina : disciplinas) {
+				for (Disciplina disciplinaSelecionada : diaDisciplinaMap
+						.values()) {
+					if (disciplinaSelecionada.getId() == disciplina.getId())
+						disciplinaSelecionada.setNome(disciplina.getNome());
+				}
+			}
+
 		} catch (Throwable e) {
 			e.printStackTrace();
 			logger.error(e.getClass() + ":" + e.getMessage());
@@ -233,8 +537,7 @@ public class TurmaController implements Serializable {
 				if (!periodoSelecionado.isEmpty()) {
 					if (!turnoSelecionado.isEmpty()) {
 
-						carregarTurnoSelecionado();
-						carregarDisicplinas();
+						carregarDisciplinas();
 						carregarProfessores();
 						agruparProfessoresPorDisciplinas();
 						carregarCadeiras();
@@ -269,64 +572,6 @@ public class TurmaController implements Serializable {
 						new FacesMessage(FacesMessage.SEVERITY_WARN,
 								"Favor selecionar o curso!", ""));
 			}
-
-		} catch (Throwable e) {
-			e.printStackTrace();
-			logger.error(e.getClass() + ":" + e.getMessage());
-		}
-	}
-
-	private void carregarDisicplinas() {
-		try {
-
-			carregarPeriodoSelecionado();
-
-			if (periodo != null)
-				disciplinas = new ArrayList<Disciplina>(
-						periodo.getDisciplinas());
-			else
-				disciplinas = new ArrayList<Disciplina>();
-
-		} catch (Throwable e) {
-			e.printStackTrace();
-			logger.error(e.getClass() + ":" + e.getMessage());
-		}
-	}
-
-	private void carregarPeriodoSelecionado() {
-		try {
-
-			for (Periodo periodoSelecionado : periodos) {
-				if (periodoSelecionado.getPeriodoStr().equals(
-						this.periodoSelecionado))
-					periodo = periodoSelecionado;
-			}
-
-		} catch (Throwable e) {
-			e.printStackTrace();
-			logger.error(e.getClass() + ":" + e.getMessage());
-		}
-	}
-
-	private void carregarProfessores() {
-		try {
-
-			professores = professorService.buscarTodos();
-
-			List<Professor> professoresTemp = new ArrayList<Professor>();
-
-			for (Professor professor : professores) {
-				for (Disciplina disciplina : disciplinas) {
-					for (Disciplina disciplinaProfessor : professor
-							.getDisciplinas()) {
-						if (disciplina.getId() == disciplinaProfessor.getId()
-								&& !professoresTemp.contains(professor))
-							professoresTemp.add(professor);
-					}
-				}
-			}
-
-			professores = professoresTemp;
 
 		} catch (Throwable e) {
 			e.printStackTrace();
@@ -433,13 +678,13 @@ public class TurmaController implements Serializable {
 				Professor professor = cadeira.getProfessor();
 
 				if (professor != null) {
-					for (DiaEnum dia : DiaEnum.values()) {						
-						if(dia.ordinal() == cadeiras.size()){
+					for (DiaEnum dia : DiaEnum.values()) {
+						if (dia.ordinal() == cadeiras.size()) {
 							break;
 						}
-						
+
 						Turno turnoProfessor = capturarTurno(professor, dia,
-								turno);						
+								turno);
 
 						if (!diasSelecionados.contains(dia)
 								&& turnoProfessor.isDisponivel()) {
@@ -473,27 +718,6 @@ public class TurmaController implements Serializable {
 			e.printStackTrace();
 			logger.error(e.getClass() + ":" + e.getMessage());
 		}
-	}
-
-	private Turno capturarTurno(Professor professor, DiaEnum diaEnum,
-			TurnoEnum turnoEnum) {
-		Turno turno = new Turno();
-
-		List<Dia> dias = professor.getQuadroDeHorarios().getSemana()
-				.getListaDias();
-		for (Dia dia : dias) {
-			if (diaEnum == dia.getDia()) {
-				for (Turno turno2 : dia.getListaTurnos()) {
-					if (turno2.getTurno() == turnoEnum) {
-						turno = turno2;
-						break;
-					}
-				}
-				break;
-			}
-		}
-
-		return turno;
 	}
 
 	public Curso getCurso() {
@@ -600,6 +824,63 @@ public class TurmaController implements Serializable {
 
 	public void setTurma(Turma turma) {
 		this.turma = turma;
+	}
+
+	public List<DiaEnum> getDias() {
+		return dias;
+	}
+
+	public void setDias(List<DiaEnum> dias) {
+		this.dias = dias;
+	}
+
+	public Map<DiaEnum, Disciplina> getDiaDisciplinaMap() {
+		return diaDisciplinaMap;
+	}
+
+	public void setDiaDisciplinaMap(Map<DiaEnum, Disciplina> diaDisciplinaMap) {
+		this.diaDisciplinaMap = diaDisciplinaMap;
+	}
+
+	public Map<DiaEnum, Professor> getDiaProfessorMap() {
+		return diaProfessorMap;
+	}
+
+	public void setDiaProfessorMap(Map<DiaEnum, Professor> diaProfessorMap) {
+		this.diaProfessorMap = diaProfessorMap;
+	}
+
+	public Map<DiaEnum, List<Professor>> getDiaProfessoresMap() {
+		return diaProfessoresMap;
+	}
+
+	public void setDiaProfessoresMap(
+			Map<DiaEnum, List<Professor>> diaProfessoresMap) {
+		this.diaProfessoresMap = diaProfessoresMap;
+	}
+
+	public List<Turma> getTurmas() {
+		return turmas;
+	}
+
+	public void setTurmas(List<Turma> turmas) {
+		this.turmas = turmas;
+	}
+
+	public Turma[] getTurmasSelecionadas() {
+		return turmasSelecionadas;
+	}
+
+	public void setTurmasSelecionadas(Turma[] turmasSelecionadas) {
+		this.turmasSelecionadas = turmasSelecionadas;
+	}
+
+	public TurmasDataModel getTurmasDataModel() {
+		return turmasDataModel;
+	}
+
+	public void setTurmasDataModel(TurmasDataModel turmasDataModel) {
+		this.turmasDataModel = turmasDataModel;
 	}
 
 }
