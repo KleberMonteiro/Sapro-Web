@@ -1,10 +1,12 @@
 package br.com.saproweb.sistema.dao;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.inject.Named;
 
-import org.hibernate.Query;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Restrictions;
 
 import br.com.saproweb.infra.hibernate.dao.GenericHibernateDao;
 import br.com.saproweb.sistema.dominio.entidades.Usuario;
@@ -15,14 +17,15 @@ public class UsuarioDaoImpl extends GenericHibernateDao<Usuario, Long>
 
 	private static final long serialVersionUID = 1L;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Usuario buscarPorEmail(String email) {
-		String hql = "FROM Usuario usuario WHERE usuario.login=:email";
-		Query query = getHibernateTemplate().getSessionFactory()
-				.getCurrentSession().createQuery(hql);
-		query.setString("email", email);
+		List<Usuario> usuarios = (List<Usuario>) getHibernateTemplate()
+				.findByCriteria(
+						DetachedCriteria.forClass(Usuario.class).add(
+								Restrictions.eq("email", email)));
 
-		return (Usuario) query.uniqueResult();
+		return usuarios.get(0);
 	}
 
 }
