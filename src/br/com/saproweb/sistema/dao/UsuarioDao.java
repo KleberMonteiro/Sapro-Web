@@ -5,6 +5,6 @@ import br.com.saproweb.sistema.dominio.entidades.Usuario;
 
 public interface UsuarioDao extends GenericDao<Usuario, Long> {
 	
-	public Usuario buscarPorLogin(String login);
+	public Usuario buscarPorEmail(String email);
 	
 }

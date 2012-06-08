@@ -9,20 +9,17 @@ import org.apache.log4j.Logger;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.transaction.annotation.Transactional;
 
 import br.com.saproweb.sistema.dao.UsuarioDao;
 import br.com.saproweb.sistema.dominio.entidades.Usuario;
 
-
 @Named("adminCustomUserDetailsService")
-@Transactional
 public class AdminCustomUserDetailsService implements UserDetailsService,
 		Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private Logger logger = Logger
+	private static Logger logger = Logger
 			.getLogger(AdminCustomUserDetailsService.class);
 
 	@Inject
@@ -34,7 +31,7 @@ public class AdminCustomUserDetailsService implements UserDetailsService,
 			throws UsernameNotFoundException, DataAccessException {
 		Usuario o = null;
 		try {
-			o = usuarioDao.buscarPorLogin(arg0);
+			o = usuarioDao.buscarPorEmail(arg0);
 			if (o != null) {
 				o.getAuthorities();
 			} else {

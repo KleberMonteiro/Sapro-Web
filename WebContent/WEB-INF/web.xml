@@ -106,7 +106,7 @@
 	
 	<!-- Configurações Web Context -->
 	<welcome-file-list>
-		<welcome-file>/login</welcome-file>
+		<welcome-file>/view/turmas/turmas.jsf</welcome-file>
 	</welcome-file-list>
 
 	<session-config>

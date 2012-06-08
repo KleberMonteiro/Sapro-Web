@@ -1,12 +1,26 @@
-<ui:composition template="view/faces/default.xhtml"
-	xmlns="http://www.w3.org/1999/xhtml"
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:c="http://java.sun.com/jstl/core">
+	xmlns:p="http://primefaces.org/ui">
 
-	<ui:define name="content_landing">
+	<h:head>
+	
+		<meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-1" /> 
+		<link rel="shortcut icon" type="image/png" href="#{facesContext.externalContext.requestContextPath}/images/shortcut_icon.png" />
+		
+		<h:outputStylesheet library="css" name="estilo.css" />
+		<h:outputStylesheet library="css" name="estilo_primefaces.css" />
+		<h:outputScript library="js" name="scripts.js" />
+		
+		<title>Sapro Web</title>
+	
+	</h:head>
+	
+	<h:body>
 		
 		<div id="login">						
 							
@@ -31,7 +45,7 @@
 				<div class="plataforma"></div>
 				<div id="mensagens">
 					<p:outputPanel rendered="#{param.erro}">
-						<h:outputText value=" UsuÃ¡rio ou senha incorretos!" style="color: #FFFF66; vertical-align: middle" />
+						<h:outputText value=" Usuário ou senha incorretos!" style="color: #FFFF66; vertical-align: middle" />
 					</p:outputPanel>										
 												
 					
@@ -49,6 +63,6 @@
 			
 		</div>
 				
-	</ui:define>
-		
-</ui:composition>
+	</h:body>
+
+</html>

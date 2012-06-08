@@ -16,12 +16,13 @@ public class UsuarioDaoImpl extends GenericHibernateDao<Usuario, Long>
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	public Usuario buscarPorLogin(String login) {
-		String hql = "FROM Usuario usuario WHERE usuario.login=:login";
-		Query query = getCurrentSession().createQuery(hql);
-		query.setString("login", login);
+	public Usuario buscarPorEmail(String email) {
+		String hql = "FROM Usuario usuario WHERE usuario.login=:email";
+		Query query = getHibernateTemplate().getSessionFactory()
+				.getCurrentSession().createQuery(hql);
+		query.setString("email", email);
 
 		return (Usuario) query.uniqueResult();
 	}
-	
+
 }

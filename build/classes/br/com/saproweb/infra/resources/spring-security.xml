@@ -10,6 +10,14 @@
 		authentication-manager-ref="adminAuthentication" request-matcher="ant">
 		<intercept-url pattern="/view/**" access="ROLE_ADMIN" />
 		<intercept-url pattern="/view/**" access="ROLE_USER" />
+		<intercept-url pattern="/turmas/**" access="ROLE_ADMIN" />
+		<intercept-url pattern="/turmas/**" access="ROLE_USER" />
+		<intercept-url pattern="/cursos/**" access="ROLE_ADMIN" />
+		<intercept-url pattern="/cursos/**" access="ROLE_USER" />
+		<intercept-url pattern="/disciplinas/**" access="ROLE_ADMIN" />
+		<intercept-url pattern="/disciplinas/**" access="ROLE_USER" />
+		<intercept-url pattern="/professores/**" access="ROLE_ADMIN" />
+		<intercept-url pattern="/professores/**" access="ROLE_USER" />			
 
 		<logout invalidate-session="true" logout-success-url="/login" logout-url="/j_spring_security_logout" />
 

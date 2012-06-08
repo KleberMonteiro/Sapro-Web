@@ -1,5 +1,7 @@
 package br.com.saproweb.utils.filtros;
 
+import java.io.Serializable;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -9,8 +11,10 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 public class CustomUsernamePasswordAuthenticationFilter extends
-		UsernamePasswordAuthenticationFilter {
+		UsernamePasswordAuthenticationFilter implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	private String username;
 	private String password;
 	

@@ -36,10 +36,7 @@ public class Usuario implements UserDetails, Serializable, Cloneable {
 	// @Column(name = "nome", nullable = false, columnDefinition =
 	// "String default ''")
 	@Column(name = "nome")
-	private String nome = "";	
-	
-	@Column(name = "login")
-	private String login;
+	private String nome = "";
 
 	@Column(name = "email")
 	private String email;
@@ -130,14 +127,6 @@ public class Usuario implements UserDetails, Serializable, Cloneable {
 
 	public String getNome() {
 		return nome;
-	}
-
-	public String getLogin() {
-		return login;
-	}
-
-	public void setLogin(String login) {
-		this.login = login;
 	}
 
 	public void setEmail(String email) {
