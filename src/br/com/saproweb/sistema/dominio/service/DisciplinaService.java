@@ -8,6 +8,8 @@ public interface DisciplinaService {
 
 	public List<Disciplina> buscarTodos();
 
+	public List<Disciplina> buscarAtivos();
+
 	public Disciplina buscarPorId(Long id);
 
 	public void salvar(Disciplina entity) throws Exception;

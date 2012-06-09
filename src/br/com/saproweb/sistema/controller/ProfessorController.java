@@ -27,7 +27,7 @@ import br.com.saproweb.sistema.dominio.service.DisciplinaService;
 import br.com.saproweb.sistema.dominio.service.ProfessorService;
 import br.com.saproweb.utils.datamodel.ProfessoresDataModel;
 import br.com.saproweb.utils.enumeration.DiaEnum;
-import br.com.saproweb.utils.enumeration.StatusEnum;
+import br.com.saproweb.utils.enumeration.DisponibilidadeEnum;
 import br.com.saproweb.utils.enumeration.TurnoEnum;
 
 @Named
@@ -53,7 +53,7 @@ public class ProfessorController implements Serializable {
 	private List<Disciplina> disciplinasTarget;
 	private DualListModel<Disciplina> disciplinas;
 	private ProfessoresDataModel professoresDataModel;
-	
+
 	@SuppressWarnings("unused")
 	private String atualizarPagina;
 
@@ -104,7 +104,7 @@ public class ProfessorController implements Serializable {
 
 			logger.debug("Carregando professores...");
 
-			professores = professorService.buscarTodos();
+			professores = professorService.buscarAtivos();
 			professoresSelecionados = new Professor[professores.size()];
 			professoresDataModel = new ProfessoresDataModel(professores);
 
@@ -119,7 +119,7 @@ public class ProfessorController implements Serializable {
 
 			logger.debug("Carregando disciplinas...");
 
-			disciplinasSource = disciplinaService.buscarTodos();
+			disciplinasSource = disciplinaService.buscarAtivos();
 			disciplinasTarget = new ArrayList<Disciplina>();
 
 			if (professor != null && professor.getId() != 0) {
@@ -159,7 +159,7 @@ public class ProfessorController implements Serializable {
 
 			logger.debug("Criando novo professor...");
 
-			professor = new Professor();
+			professor = new Professor();	
 			professor.setQuadroDeHorarios(gerarQuadroDeHorarios());
 
 			logger.debug("Professor criado!");
@@ -217,7 +217,6 @@ public class ProfessorController implements Serializable {
 				logger.debug("Gerando turnos de " + DiaEnum.values()[i]
 						+ " ...");
 				dia.setTurnos(gerarTurnos());
-				dia.setStatus(StatusEnum.ATIVO);
 				dias.add(dia);
 			}
 
@@ -238,7 +237,7 @@ public class ProfessorController implements Serializable {
 			for (int i = 0; i < TurnoEnum.values().length; i++) {
 				Turno turno = new Turno();
 				turno.setTurno(TurnoEnum.values()[i]);
-				turno.setDisponivel(true);
+				turno.setDisponibilidade(DisponibilidadeEnum.DISPONIVEL);
 				turnos.add(turno);
 			}
 
@@ -257,7 +256,7 @@ public class ProfessorController implements Serializable {
 				logger.debug("Salvando...");
 
 				professor.setDisciplinas(new HashSet<Disciplina>(disciplinas
-						.getTarget()));
+						.getTarget()));				
 
 				professorService.salvar(professor);
 

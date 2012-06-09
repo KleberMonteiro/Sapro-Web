@@ -34,6 +34,7 @@ import br.com.saproweb.sistema.dominio.service.TurmaService;
 import br.com.saproweb.utils.comparator.PrioridadeComparator;
 import br.com.saproweb.utils.datamodel.TurmasDataModel;
 import br.com.saproweb.utils.enumeration.DiaEnum;
+import br.com.saproweb.utils.enumeration.DisponibilidadeEnum;
 import br.com.saproweb.utils.enumeration.TurnoEnum;
 
 @Named
@@ -106,13 +107,17 @@ public class TurmaController implements Serializable {
 
 	public void novoRegistro() {
 		try {
+			
+			Map<String, Object> sessionMap = FacesContext.getCurrentInstance()
+					.getExternalContext().getSessionMap();
+			sessionMap.remove("turmaController");
 
-			curso = null;
-			periodo = null;
-			turnoSelecionado = "";
-			carregarPagina();
-			carregarPeriodos();
-			carregarDisciplinas();
+//			curso = null;
+//			periodo = null;
+//			turnoSelecionado = "";
+//			carregarPagina();
+//			carregarPeriodos();
+//			carregarDisciplinas();
 
 		} catch (Throwable e) {
 			e.printStackTrace();
@@ -123,7 +128,7 @@ public class TurmaController implements Serializable {
 	public void carregarPagina() {
 		try {
 
-			turmas = turmaService.buscarTodos();
+			turmas = turmaService.buscarAtivos();
 			turmasSelecionadas = new Turma[turmas.size()];
 			turmasDataModel = new TurmasDataModel(turmas);
 
@@ -132,7 +137,7 @@ public class TurmaController implements Serializable {
 			carregarDias();
 			carregarDisciplinas();
 
-			professores = professorService.buscarTodos();
+			professores = professorService.buscarAtivos();
 			carregarProfessores();
 
 		} catch (Throwable e) {
@@ -147,7 +152,7 @@ public class TurmaController implements Serializable {
 			if (cursoSelecionado == null)
 				cursoSelecionado = new Curso();
 
-			cursos = cursoService.buscarTodos();
+			cursos = cursoService.buscarAtivos();
 
 		} catch (Throwable e) {
 			e.printStackTrace();
@@ -372,7 +377,7 @@ public class TurmaController implements Serializable {
 					for (Professor professor : professoresRelacionados) {
 						Turno turno = capturarTurno(professor, dia, this.turno);
 
-						if (turno.isDisponivel()
+						if (turno.getDisponibilidade() == DisponibilidadeEnum.DISPONIVEL
 								&& !professoresDisponiveis.contains(professor)) {
 							professoresDisponiveis.add(professor);
 						}
@@ -435,11 +440,44 @@ public class TurmaController implements Serializable {
 			professores.removeAll(professoresTemp);
 		}
 	}
-	
+
 	public void excluir() {
 		try {
 
-			
+			logger.debug("Excluindo...");
+
+			int qtdeTurmasSelecionadas = turmasSelecionadas.length;
+
+			if (qtdeTurmasSelecionadas > 0) {
+				for (int i = 0; i < qtdeTurmasSelecionadas; i++) {
+					Turma turma = turmasSelecionadas[i];
+					turmaService.excluir(turma);
+
+					logger.debug("Turma excluída com sucesso!");
+				}
+
+				if (qtdeTurmasSelecionadas == 1) {
+					FacesContext
+							.getCurrentInstance()
+							.addMessage(
+									null,
+									new FacesMessage(
+											"Turma removida com sucesso!"));
+				} else if (qtdeTurmasSelecionadas > 1) {
+					FacesContext.getCurrentInstance().addMessage(
+							null,
+							new FacesMessage(
+									"Turmas removidas com sucesso!"));
+				}
+
+				carregarPagina();
+			} else {
+				FacesContext.getCurrentInstance().addMessage(
+						null,
+						new FacesMessage(FacesMessage.SEVERITY_WARN,
+								"Por favor selecione ao menos uma turma!",
+								""));
+			}
 
 		} catch (Throwable e) {
 			e.printStackTrace();
@@ -452,9 +490,19 @@ public class TurmaController implements Serializable {
 
 			turma = new Turma();
 			turma.setCurso(curso);
-			turma.setCadeiras(criarCadeiras());			
-
+			turma.setCadeiras(criarCadeiras());
+			turma.setTurno(this.turno);
+			
 			turmaService.salvar(turma);
+			
+			FacesContext
+			.getCurrentInstance()
+			.addMessage(
+					null,
+					new FacesMessage(
+							"Turma salva com sucesso!"));
+			
+			novoRegistro();
 
 		} catch (Throwable e) {
 			e.printStackTrace();
@@ -475,7 +523,7 @@ public class TurmaController implements Serializable {
 
 			if (professor.getId() > 0) {
 				Turno turno = capturarTurno(professor, dia, this.turno);
-				turno.setDisponivel(false);
+				turno.setDisponibilidade(DisponibilidadeEnum.OCUPADO);
 
 				Cadeira cadeira = new Cadeira();
 				cadeira.setDia(dia);
@@ -638,7 +686,7 @@ public class TurmaController implements Serializable {
 						for (Dia dia : dias) {
 							for (Turno turno : dia.getTurnos()) {
 								if (turno.getTurno() == this.turno) {
-									if (turno.isDisponivel())
+									if (turno.getDisponibilidade() == DisponibilidadeEnum.DISPONIVEL)
 										prioridade--;
 								}
 							}
@@ -687,10 +735,11 @@ public class TurmaController implements Serializable {
 								turno);
 
 						if (!diasSelecionados.contains(dia)
-								&& turnoProfessor.isDisponivel()) {
+								&& turnoProfessor.getDisponibilidade() == DisponibilidadeEnum.DISPONIVEL) {
 							cadeira.setDia(dia);
 							diasSelecionados.add(dia);
-							turnoProfessor.setDisponivel(false);
+							turnoProfessor
+									.setDisponibilidade(DisponibilidadeEnum.OCUPADO);
 							break;
 						}
 					}

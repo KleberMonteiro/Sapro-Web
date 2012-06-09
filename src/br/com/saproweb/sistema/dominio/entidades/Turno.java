@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import br.com.saproweb.utils.enumeration.DisponibilidadeEnum;
 import br.com.saproweb.utils.enumeration.TurnoEnum;
 
 @Entity
@@ -29,7 +30,7 @@ public class Turno implements Serializable {
 	private TurnoEnum turno;
 	
 	@Column(name = "disponivel")
-	private boolean disponivel = false;
+	private DisponibilidadeEnum disponibilidade;
 
 	// Gets e Sets
 	public long getId() {
@@ -48,12 +49,12 @@ public class Turno implements Serializable {
 		this.turno = turno;
 	}
 
-	public boolean isDisponivel() {
-		return disponivel;
+	public DisponibilidadeEnum getDisponibilidade() {
+		return disponibilidade;
 	}
 
-	public void setDisponivel(boolean disponivel) {
-		this.disponivel = disponivel;
+	public void setDisponibilidade(DisponibilidadeEnum disponibilidade) {
+		this.disponibilidade = disponibilidade;
 	}
 
 }

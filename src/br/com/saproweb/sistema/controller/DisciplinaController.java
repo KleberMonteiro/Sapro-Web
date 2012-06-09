@@ -59,7 +59,7 @@ public class DisciplinaController implements Serializable {
 	}
 
 	private void carregarDisciplinas() {
-		disciplinas = disciplinaService.buscarTodos();
+		disciplinas = disciplinaService.buscarAtivos();
 		disciplinasDataModel = new DisciplinasDataModel(disciplinas);
 		disciplinasSelecionadas = new Disciplina[disciplinas.size()];
 	}

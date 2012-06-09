@@ -30,10 +30,10 @@ public class Cadeira implements Serializable {
 	@Enumerated(EnumType.ORDINAL)
 	private DiaEnum dia;
 
-	@OneToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@OneToOne(cascade = CascadeType.ALL)
 	private Professor professor;
 
-	@OneToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@OneToOne(cascade = CascadeType.ALL)
 	private Disciplina disciplina;
 
 	public long getId() {

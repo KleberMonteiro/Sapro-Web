@@ -5,4 +5,6 @@ import br.com.saproweb.sistema.dominio.entidades.Curso;
 
 public interface CursoDao extends GenericDao<Curso, Long>{
 
+	public void desativar(Curso curso);
+	
 }

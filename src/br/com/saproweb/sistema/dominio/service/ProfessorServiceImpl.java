@@ -24,23 +24,28 @@ public class ProfessorServiceImpl implements ProfessorService, Serializable {
 	}
 
 	@Override
+	public List<Professor> buscarAtivos() {
+		return professorDao.buscarAtivos();
+	}
+
+	@Override
 	public Professor buscarPorId(Long id) {
 		return professorDao.buscarPorId(id);
 	}
 
 	@Override
-	public void salvar(Professor entity) throws Exception {
-		professorDao.salvar(entity);		
+	public void salvar(Professor professor) throws Exception {
+		professorDao.salvar(professor);		
 	}
 
 	@Override
-	public void excluir(Professor entity) {
-		professorDao.excluir(entity);		
+	public void excluir(Professor professor) {
+		professorDao.desativar(professor);		
 	}
 
 	@Override
-	public void atualizar(Professor entity) {
-		professorDao.atualizar(entity);
+	public void atualizar(Professor professor) {
+		professorDao.atualizar(professor);
 	}	
 
 }

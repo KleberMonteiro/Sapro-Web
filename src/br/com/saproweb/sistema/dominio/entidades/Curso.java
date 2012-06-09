@@ -6,6 +6,8 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,6 +16,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import br.com.saproweb.utils.enumeration.StatusEnum;
 
 @Entity
 @Table(name = "curso")
@@ -32,6 +36,10 @@ public class Curso implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinTable(name = "curso_grade", joinColumns = { @JoinColumn(name = "id_curso") }, inverseJoinColumns = { @JoinColumn(name = "id_grade") })
 	private Set<Grade> grades;
+
+	@Column(name = "status")
+	@Enumerated(EnumType.ORDINAL)
+	private StatusEnum status = StatusEnum.ATIVO;
 
 	// Gets e Sets
 	public long getId() {
@@ -56,6 +64,14 @@ public class Curso implements Serializable {
 
 	public void setGrades(Set<Grade> grades) {
 		this.grades = grades;
+	}
+
+	public StatusEnum getStatus() {
+		return status;
+	}
+
+	public void setStatus(StatusEnum status) {
+		this.status = status;
 	}
 
 }

@@ -8,6 +8,8 @@ import org.springframework.dao.DataAccessException;
 public interface GenericDao<T, PK extends Serializable> {
 
 	List<T> buscarTodos() throws DataAccessException;
+	
+	List<T> buscarAtivos() throws DataAccessException;
 
 	T buscarPorId(PK id) throws DataAccessException;
 

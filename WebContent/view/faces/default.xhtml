@@ -21,10 +21,29 @@
 	</h:head>
 	
 	<h:body>
+	
+		<p:growl id="growl" life="5000"/>
 		
 		<div id="all">
 			<div id="top">
-				<span id="ur" style="color: #FFF"></span>		
+				<div id="top_content">
+					<div id="usuario" style="float: left; padding-top: 3px">
+						<h:outputText value="Olá, #{sessionController.usuario.nome}" style="color: #D7E7F3; font-size: 10pt; font-weight: bold"/>
+					</div>
+					<div id="menu_top" style="float: right">
+						<p:outputPanel rendered="#{false}">
+							<h:outputLink value="/usuario" style="color: #D7E7F3; font-size: 10pt; font-weight: bold">
+								<h:outputText value="Gerenciar Usuários"/> 
+							</h:outputLink>
+							<p:spacer width="15" height="0" />
+							<h:outputText value="|" style="color: #D7E7F3;"/>
+							<p:spacer width="15" height="0" /> 
+						</p:outputPanel>
+						<h:outputLink value="/j_spring_security_logout" style="color: #D7E7F3; font-size: 10pt; font-weight: bold">
+							<h:outputText value="Sair"/> 
+						</h:outputLink>
+					</div>
+				</div>	
 			</div>
 			<div id="page">			
 				<div id="header">

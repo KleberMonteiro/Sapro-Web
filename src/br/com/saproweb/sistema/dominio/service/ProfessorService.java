@@ -7,6 +7,8 @@ import br.com.saproweb.sistema.dominio.entidades.Professor;
 public interface ProfessorService {
 
 	public List<Professor> buscarTodos();
+	
+	public List<Professor> buscarAtivos();
 
 	public Professor buscarPorId(Long id);
 

@@ -21,32 +21,49 @@
 	</h:head>
 	
 	<h:body>
+	
+		<div style="position: relative; top: 50%; height: 50%%; background-image: url('/images/background2.png'); border-top: 1px solid #F8F8F8"></div>
 		
-		<div id="login">						
-
-			<form action="j_spring_security_check" method="post">
-
-				<h:outputLabel for="j_username" value="Usuário: " styleClass="label"/>
-				<div id="fundo_username">
-					<h:inputText id="j_username" required="true" size="40" maxlength="80" styleClass="username"/>
+		<div id="conteudo" style="position: absolute; width: 700px; height: 300px; top: 50%; left: 50%; margin: -150px 0 0 -350px;">
+		
+			<div style="float: left">
+				<img src="#{facesContext.externalContext.requestContextPath}/images/shadow_left.png" />
+			</div>
+			<div style="float: left; height: 100%; background-image: url('/images/background.png'); border-bottom: 1px solid #D4D4D4">
+		
+				<div id="logo" style="float: left; margin: 110px 0 0 20px">
+					<img src="#{facesContext.externalContext.requestContextPath}/images/logo_gray.png" width="300"/>
 				</div>
-				<br />								
-				<h:outputLabel for="j_password" value="Senha: " styleClass="label"/>
-				<div id="fundo_username">
-					<h:inputSecret id="j_password" required="true" size="40" styleClass="password"/>
+			
+				<div id="login" style="float: left; margin: 70px 20px 0 40px">						
+		
+					<form action="j_spring_security_check" method="post">
+		
+						<h:outputLabel for="j_username" value="Usuário: " styleClass="label" style="color: #777"/>
+						<div id="fundo_username" style="height: 30px; background-image: url('/images/fundo_input.png'); border-radius: 3px;">
+							<h:inputText id="j_username" required="true" size="32" styleClass="username" style="background: none; margin: 7px 0 0 3px; font-size: 12pt; color: #777"/>
+						</div>
+						<br />								
+						<h:outputLabel for="j_password" value="Senha: " styleClass="label" style="color: #555"/>
+						<div id="fundo_username" style="height: 30px; background-image: url('/images/fundo_input.png'); border-radius: 3px;">
+							<h:inputSecret id="j_password" required="true" size="32" styleClass="password" style="background: none; margin: 7px 0 0 3px; font-size: 12pt; color: #777"/>
+						</div>
+						<h:commandButton value="Entrar" styleClass="entrar" />
+		
+					</form>
+					
+					<div id="mensagens" style="margin-top: 5px">
+						<h:outputText value="Usuário ou senha incorretos!"
+							rendered="#{param.erro}" style="color: #FF0033; font-size: 9pt" />
+					</div>	
+		
 				</div>
-				<br />
-				<h:commandButton value="Entrar" styleClass="entrar" />
-
-			</form>
-
-			<div id="mensagens">
-				<h:outputText value="Usuário ou senha incorretos!"
-					rendered="#{param.erro}" style="color: #FFFF66" />
-				<h:outputText value="Logout feito com sucesso!"
-					rendered="#{param.logout}" style="color: #FEECFA" />
-			</div>	
-
+			
+			</div>			
+			<div style="float: left">
+				<img src="#{facesContext.externalContext.requestContextPath}/images/shadow_right.png" />
+			</div>
+		
 		</div>
 				
 	</h:body>

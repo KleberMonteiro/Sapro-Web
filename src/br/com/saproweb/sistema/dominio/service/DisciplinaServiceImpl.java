@@ -12,14 +12,14 @@ import br.com.saproweb.sistema.dominio.entidades.Disciplina;
 import br.com.saproweb.utils.comparator.OrdemAlfabeticaComparator;
 
 @Named("disciplinaService")
-public class DisciplinaServiceImpl implements DisciplinaService, Serializable{
+public class DisciplinaServiceImpl implements DisciplinaService, Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Inject
 	@Named("disciplinaDao")
 	private DisciplinaDao disciplinaDao;
-	
+
 	@Override
 	public List<Disciplina> buscarTodos() {
 		List<Disciplina> disciplinas = disciplinaDao.buscarTodos();
@@ -28,23 +28,28 @@ public class DisciplinaServiceImpl implements DisciplinaService, Serializable{
 	}
 
 	@Override
+	public List<Disciplina> buscarAtivos() {
+		return disciplinaDao.buscarAtivos();
+	}
+
+	@Override
 	public Disciplina buscarPorId(Long id) {
 		return disciplinaDao.buscarPorId(id);
 	}
 
 	@Override
-	public void salvar(Disciplina entity) throws Exception {
-		disciplinaDao.salvar(entity);		
+	public void salvar(Disciplina disciplina) throws Exception {
+		disciplinaDao.salvar(disciplina);
 	}
 
 	@Override
-	public void excluir(Disciplina entity) {
-		disciplinaDao.excluir(entity);		
+	public void excluir(Disciplina disciplina) {
+		disciplinaDao.desativar(disciplina);
 	}
 
 	@Override
-	public void atualizar(Disciplina entity) {
-		disciplinaDao.atualizar(entity);		
+	public void atualizar(Disciplina disciplina) {
+		disciplinaDao.atualizar(disciplina);
 	}
 
 }

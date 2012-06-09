@@ -8,6 +8,8 @@ public interface PermissaoService {
 
 	public List<Permissao> buscarTodos();
 
+	public List<Permissao> buscarAtivos();
+
 	public Permissao buscarPorId(Long id);
 
 	public void salvar(Permissao permissao);

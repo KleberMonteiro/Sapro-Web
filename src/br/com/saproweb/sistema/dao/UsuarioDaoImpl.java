@@ -10,6 +10,7 @@ import org.hibernate.criterion.Restrictions;
 
 import br.com.saproweb.infra.hibernate.dao.GenericHibernateDao;
 import br.com.saproweb.sistema.dominio.entidades.Usuario;
+import br.com.saproweb.utils.enumeration.StatusEnum;
 
 @Named("usuarioDao")
 public class UsuarioDaoImpl extends GenericHibernateDao<Usuario, Long>
@@ -22,10 +23,19 @@ public class UsuarioDaoImpl extends GenericHibernateDao<Usuario, Long>
 	public Usuario buscarPorEmail(String email) {
 		List<Usuario> usuarios = (List<Usuario>) getHibernateTemplate()
 				.findByCriteria(
-						DetachedCriteria.forClass(Usuario.class).add(
-								Restrictions.eq("email", email)));
+						DetachedCriteria
+								.forClass(Usuario.class)
+								.add(Restrictions.eq("email", email))
+								.add(Restrictions
+										.eq("status", StatusEnum.ATIVO)));
 
 		return usuarios.get(0);
+	}
+
+	@Override
+	public void desativar(Usuario usuario) {
+		usuario.setStatus(StatusEnum.DELETADO);
+		atualizar(usuario);
 	}
 
 }

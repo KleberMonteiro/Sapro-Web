@@ -8,6 +8,8 @@ public interface TurmaService {
 
 	public List<Turma> buscarTodos();
 
+	public List<Turma> buscarAtivos();
+
 	public Turma buscarPorId(Long id);
 
 	public void salvar(Turma entity) throws Exception;

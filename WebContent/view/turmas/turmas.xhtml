@@ -10,8 +10,6 @@
 		<h:form>
 			<h:inputHidden value="#{turmaController.atualizarPagina}"/>
 		</h:form>
-			
-		<p:growl id="growl" life="5000"/>
 		
 		<h:outputText class="pagina_atual" value="turmas" style="display: none" />
 		
@@ -38,7 +36,7 @@
 		            		<div class="tab_top_left">
 		            			<h:form>
 			            			<p:commandButton value="Novo Registro" style="float: left" actionListener="#{turmaController.novoRegistro}"
-			            				update=":tabview:form_curso, :tabview:form_cadeiras"
+			            				update=":tabview:form_curso, :tabview:form_cadeiras, :tabview:form_consulta"
 										onclick="showAjaxLoader('cadastro')" oncomplete="hideAjaxLoader('cadastro')"/>																				
 								</h:form>
 		            		</div>
@@ -52,7 +50,7 @@
 						
 						<h:form id="form_curso" prependId="false">						
 							
-							<div style="float: left; margin-right: 10px">	
+							<div style="float: left; margin: 0 30px 0 20px;">	
 								<h:outputLabel for="curso" value="Curso: "/><br />
 								<p:selectOneMenu id="curso" value="#{turmaController.cursoSelecionado.id}" onchange="carregarPeriodos(), showAjaxLoader('cadastro')" 
 									style="height: 24px; font-size: 1.3em !important; width: 270px !important; text-align: center !important">
@@ -60,7 +58,7 @@
 				        			<f:selectItems value="#{turmaController.cursos}" var="curso" itemLabel="#{curso.nome}" itemValue="#{curso.id}"/>
 				        		</p:selectOneMenu>
 				        	</div>
-				        	<div style="float: left; margin-right: 10px">		
+				        	<div style="float: left; margin-right: 30px">		
 				        		<h:outputLabel for="periodo" value="Período: "/><br />
 				        		<p:selectOneMenu id="periodo" value="#{turmaController.periodoSelecionado}" onchange="carregarDisciplinas(), showAjaxLoader('cadastro')"
 				        			style="width: 100px !important; height: 24px; font-size: 1.3em !important; text-align: center !important">
@@ -68,19 +66,14 @@
 				        			<f:selectItems value="#{turmaController.periodosStr}" var="periodo" itemLabel="#{periodo}º" itemValue="#{periodo}"/>
 				        		</p:selectOneMenu>
 				        	</div>
-				        	<div style="float: left; margin-right: 50px">		
+				        	<div style="float: left;">		
 				        		<h:outputLabel for="turno" value="Turno: "/><br />
 				        		<p:selectOneMenu id="turno" value="#{turmaController.turnoSelecionado}" onchange="carregarTurno(), showAjaxLoader('cadastro')"
 				        			style="width: 150px !important; height: 24px; font-size: 1.3em !important; text-align: center !important">
 				        			<f:selectItem itemLabel="" itemValue=""/>
 				        			<f:selectItems value="#{turmaController.turnos}" var="turno" itemLabel="#{turno}" itemValue="#{turno}"/>
 				        		</p:selectOneMenu>
-				        	</div>			        		
-			        		
-			        		<div style="float: left; margin-top: 13px">			        		
-				        		<p:commandButton value="Alocar Professores" actionListener="#{turmaController.alocarProfessores}" disabled="true"
-									update=":tabview:form_cadeiras, :growl" onclick="showAjaxLoader('cadastro')" oncomplete="hideAjaxLoader('cadastro')"/>
-							</div>
+				        	</div>	
 							
 							<p:remoteCommand name="carregarPeriodos" actionListener="#{turmaController.carregarPeriodos}" 
 								update="form_curso" oncomplete="hideAjaxLoader('cadastro')" />
@@ -124,7 +117,7 @@
 							
 							<div id="salvar" style="position: absolute; top: 60px; left: 130px;">
 					            <p:commandButton value="Salvar" actionListener="#{turmaController.salvar}"
-					            	update=":tabview:form_curso, :tabview:form_cadeiras, :growl"
+					            	update=":tabview:form_curso, :tabview:form_cadeiras, :tabview:form_consulta, :growl"
 					            	onclick="showAjaxLoader('cadastro')" oncomplete="hideAjaxLoader('cadastro')" />		            
 				         	</div>							
 														
@@ -156,7 +149,7 @@
 							
 						    <p:dataTable id="turmas_table" widgetVar="turmas_table" var="turma" value="#{turmaController.turmasDataModel}"  
 				                paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
-				                rowsPerPageTemplate="5,10,15,20,25,30" selection="#{disciplinaController.disciplinasSelecionadas}" emptyMessage="Nenhum registro encontrado" 
+				                rowsPerPageTemplate="5,10,15,20,25,30" selection="#{turmaController.turmasSelecionadas}" emptyMessage="Nenhum registro encontrado" 
 				                paginator="true" rows="15" rowKey="#{turma.id}" styleClass="data_table">			  		 
 						  				  
 						  		<p:column selectionMode="multiple" style="width:18px" />
@@ -182,6 +175,21 @@
 			</p:tabView>
 					
 		</div>
+		
+		 <h:form id="form_exclusao_dialog" prependId="false">
+		    <p:confirmDialog id="confirmar_exclusao" message="Tem certeza eu desejas excluir estas informações?"  
+                header="Confirmação de exclusão" severity="info" widgetVar="confirmarExclusao" closable="false">  
+                
+                <div id="confirmar">  
+			        <p:commandButton id="sim" value="Sim" actionListener="#{turmaController.excluir}" 
+			        	update=":tabview:form_curso, :tabview:form_cadeiras,:tabview:form_consulta, :growl"
+			        	onclick="showAjaxLoader('consulta'), confirmarExclusao.hide()" 
+			        	oncomplete="hideAjaxLoader('consulta')" style="margin-right: 20px"/>			        		          
+			        <p:commandButton id="nao" value="Não" onclick="confirmarExclusao.hide()" type="button" />
+		        </div>  
+		                  
+		    </p:confirmDialog>
+	    </h:form>
 	    
 	    <div id="linha"></div>			
 		<div id="separador"></div>		    

@@ -5,4 +5,6 @@ import br.com.saproweb.sistema.dominio.entidades.Disciplina;
 
 public interface DisciplinaDao extends GenericDao<Disciplina, Long>{
 
+	public void desativar(Disciplina disciplina);
+	
 }

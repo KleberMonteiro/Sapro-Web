@@ -6,6 +6,8 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,10 +19,12 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import br.com.saproweb.utils.enumeration.StatusEnum;
+
 @Entity
 @Table(name = "professor")
-public class Professor implements Serializable{
-	
+public class Professor implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -28,20 +32,24 @@ public class Professor implements Serializable{
 	@Column(name = "id", unique = true, nullable = false)
 	private long id;
 
-	@Column(name = "nome", nullable = false, columnDefinition="VARCHAR(60) default ''")
+	@Column(name = "nome", nullable = false, columnDefinition = "VARCHAR(60) default ''")
 	private String nome = "";
-	
-	@Column(name = "matricula", nullable = false, columnDefinition="VARCHAR(30) default ''")
+
+	@Column(name = "matricula", nullable = false, columnDefinition = "VARCHAR(30) default ''")
 	private String matricula = "";
-	
+
 	@OneToOne(cascade = CascadeType.ALL)
 	private QuadroDeHorarios quadroDeHorarios;
-	
+
 	@ManyToMany(targetEntity = Disciplina.class, cascade = {
-		CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER)
+			CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER)
 	@JoinTable(name = "professor_disciplina", joinColumns = @JoinColumn(name = "id_professor"), inverseJoinColumns = @JoinColumn(name = "id_disciplina"))
 	private Set<Disciplina> disciplinas;
-		
+
+	@Column(name = "status")
+	@Enumerated(EnumType.ORDINAL)
+	private StatusEnum status = StatusEnum.ATIVO;
+
 	@Transient
 	private int prioridade;
 
@@ -92,6 +100,14 @@ public class Professor implements Serializable{
 
 	public void setPrioridade(int prioridade) {
 		this.prioridade = prioridade;
+	}
+
+	public StatusEnum getStatus() {
+		return status;
+	}
+
+	public void setStatus(StatusEnum status) {
+		this.status = status;
 	}
 
 }

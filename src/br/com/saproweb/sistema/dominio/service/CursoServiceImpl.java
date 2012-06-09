@@ -10,10 +10,10 @@ import br.com.saproweb.sistema.dao.CursoDao;
 import br.com.saproweb.sistema.dominio.entidades.Curso;
 
 @Named("cursoService")
-public class CursoServiceImpl implements CursoService, Serializable{
+public class CursoServiceImpl implements CursoService, Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	@Inject
 	@Named("cursoDao")
 	private CursoDao cursoDao;
@@ -24,23 +24,28 @@ public class CursoServiceImpl implements CursoService, Serializable{
 	}
 
 	@Override
+	public List<Curso> buscarAtivos() {
+		return cursoDao.buscarAtivos();
+	}
+
+	@Override
 	public Curso buscarPorId(Long id) {
 		return cursoDao.buscarPorId(id);
 	}
 
 	@Override
-	public void salvar(Curso entity) throws Exception {
-		cursoDao.salvar(entity);
+	public void salvar(Curso curso) throws Exception {
+		cursoDao.salvar(curso);
 	}
 
 	@Override
-	public void excluir(Curso entity) {
-		cursoDao.excluir(entity);
+	public void excluir(Curso curso) {
+		cursoDao.desativar(curso);
 	}
 
 	@Override
-	public void atualizar(Curso entity) {
-		cursoDao.atualizar(entity);
+	public void atualizar(Curso curso) {
+		cursoDao.atualizar(curso);
 	}
 
 }

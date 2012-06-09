@@ -21,37 +21,31 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import br.com.saproweb.utils.enumeration.DiaEnum;
-import br.com.saproweb.utils.enumeration.StatusEnum;
 
 @Entity
 @Table(name = "dia")
 public class Dia implements Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", unique = true, nullable = false)
 	private long id;
-	
+
 	@Column(name = "dia")
 	@Enumerated(EnumType.ORDINAL)
 	private DiaEnum dia;
-	
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)	
-	@JoinTable(name = "dia_turnos", joinColumns = { @JoinColumn(name = "id_dia") },
-		inverseJoinColumns = { @JoinColumn(name = "id_turno") })
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinTable(name = "dia_turnos", joinColumns = { @JoinColumn(name = "id_dia") }, inverseJoinColumns = { @JoinColumn(name = "id_turno") })
 	private Set<Turno> turnos;
-	
-	@Column(name = "status")
-	@Enumerated(EnumType.ORDINAL)
-	private StatusEnum status;
-	
+
 	@SuppressWarnings("unused")
 	@Transient
 	private List<Turno> listaTurnos;
 
-	//Gets e Sets
+	// Gets e Sets
 	public long getId() {
 		return id;
 	}
@@ -76,20 +70,12 @@ public class Dia implements Serializable {
 		this.turnos = turnos;
 	}
 
-	public StatusEnum getStatus() {
-		return status;
-	}
-	
-	public void setStatus(StatusEnum status) {
-		this.status = status;
-	}	
-
 	public List<Turno> getListaTurnos() {
 		return new ArrayList<Turno>(turnos);
 	}
 
 	public void setListaTurnos(List<Turno> listaTurnos) {
 		this.listaTurnos = listaTurnos;
-	}	
+	}
 
 }

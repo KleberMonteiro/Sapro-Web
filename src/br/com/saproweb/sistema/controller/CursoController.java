@@ -27,7 +27,6 @@ import br.com.saproweb.sistema.dominio.entidades.Periodo;
 import br.com.saproweb.sistema.dominio.service.CursoService;
 import br.com.saproweb.sistema.dominio.service.DisciplinaService;
 import br.com.saproweb.utils.datamodel.CursosDataModel;
-import br.com.saproweb.utils.enumeration.StatusEnum;
 
 @Named
 @Scope("session")
@@ -168,7 +167,7 @@ public class CursoController implements Serializable {
 
 			logger.debug("Carregando cursos...");
 
-			cursos = cursoService.buscarTodos();
+			cursos = cursoService.buscarAtivos();
 			cursosSelecionados = new Curso[cursos.size()];
 			cursosDataModel = new CursosDataModel(cursos);
 
@@ -183,7 +182,7 @@ public class CursoController implements Serializable {
 
 			logger.debug("Carregando disciplinas...");
 
-			disciplinas = disciplinaService.buscarTodos();
+			disciplinas = disciplinaService.buscarAtivos();
 
 		} catch (Throwable e) {
 			e.printStackTrace();
@@ -300,7 +299,6 @@ public class CursoController implements Serializable {
 
 			grade.setPeriodos(periodos);
 			grade.setAtual(true);
-			grade.setStatus(StatusEnum.ATIVO);
 
 			return grade;
 
@@ -320,7 +318,6 @@ public class CursoController implements Serializable {
 					for (Grade grade : grades) {
 						if (grade.isAtual()) {
 							grade.setAtual(false);
-							grade.setStatus(StatusEnum.DELETADO);
 						}
 					}
 				}

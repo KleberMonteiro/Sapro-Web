@@ -24,6 +24,11 @@ public class PermissaoServiceImpl implements PermissaoService {
 	}
 
 	@Override
+	public List<Permissao> buscarAtivos() {
+		return permissaoDao.buscarAtivos();
+	}
+
+	@Override
 	public Permissao buscarPorId(Long id) {
 		return permissaoDao.buscarPorId(id);
 	}

@@ -94,7 +94,13 @@ a:link, a:visited, a:active, a:hover {
 	height: 30px;
 	background-color: #333;
 	background-image: url("/images/top_fundo.png");
-	text-align: center;
+	border-bottom: 1px solid #F8F8F8;
+}
+
+#top #top_content {	
+	width: 1000px;
+	margin: 0 auto;
+	padding-top: 7px;
 }
 
 #page {
@@ -237,4 +243,27 @@ a:link, a:visited, a:active, a:hover {
 
 #confirmar_exclusao #confirmar {
 	text-align: center;
+}
+
+#login .entrar {
+	float: right; 
+	margin-top: 30px; 
+	cursor: pointer; 
+	background-image: url('/images/btn_login.png'); 
+	border-width: 1px; 
+	border-style: solid; 
+	border-color: #999 #DDD #FFF; 
+	border-radius: 3px; 
+	height: 40px; 
+	width: 80px; 
+	color: #777;
+}
+
+#login .entrar:hover {
+	border-color: #FFF #DDD #999;
+}
+
+#login .entrar:active,
+#login .entrar:focus {
+	background-image: url('/images/btn_login_click.png'); 
 }

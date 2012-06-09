@@ -7,6 +7,8 @@ import br.com.saproweb.sistema.dominio.entidades.Usuario;
 public interface UsuarioService {
 
 	public List<Usuario> buscarTodos();
+	
+	public List<Usuario> buscarAtivos();
 
 	public Usuario buscarPorId(Long id);
 

@@ -5,4 +5,6 @@ import br.com.saproweb.sistema.dominio.entidades.Turma;
 
 public interface TurmaDao extends GenericDao<Turma, Long> {
 
+	public void desativar(Turma turma);
+
 }

@@ -8,6 +8,8 @@ public interface CursoService {
 	
 	public List<Curso> buscarTodos();
 
+	public List<Curso> buscarAtivos();
+
 	public Curso buscarPorId(Long id);
 
 	public void salvar(Curso entity) throws Exception;

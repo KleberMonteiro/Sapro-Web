@@ -7,8 +7,13 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.CriteriaSpecification;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.dao.DataAccessException;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+
+import br.com.saproweb.utils.enumeration.StatusEnum;
 
 public class GenericHibernateDao<T, PK extends Serializable> extends
 		HibernateDaoSupport implements GenericDao<T, PK> {
@@ -30,6 +35,17 @@ public class GenericHibernateDao<T, PK extends Serializable> extends
 	@Override
 	public List<T> buscarTodos() throws DataAccessException {
 		return (List<T>) getHibernateTemplate().find("from " + tipo.getName());
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<T> buscarAtivos() throws DataAccessException {
+		return (List<T>) getHibernateTemplate().findByCriteria(
+				DetachedCriteria
+						.forClass(tipo)
+						.add(Restrictions.eq("status", StatusEnum.ATIVO))
+						.setResultTransformer(
+								CriteriaSpecification.DISTINCT_ROOT_ENTITY));
 	}
 
 	@Override
@@ -55,4 +71,5 @@ public class GenericHibernateDao<T, PK extends Serializable> extends
 	public Class<T> getType() {
 		return tipo;
 	}
+
 }

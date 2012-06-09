@@ -6,10 +6,10 @@
 	xmlns:p="http://primefaces.org/ui">	
 
 	<ui:define name="page_content">
-	
-		<h:inputHidden value="#{disciplinaController.atualizarPagina}" />
-			
-		<p:growl id="growl" life="5000"/>
+		
+		<h:form>
+			<h:inputHidden value="#{disciplinaController.atualizarPagina}" />
+		</h:form>
 		
 		<h:outputText class="pagina_atual" value="disciplinas" style="display: none" />
 		
